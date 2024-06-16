@@ -1,31 +1,25 @@
-package com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.homefragment
+package com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.botfragments.manuelbotfragment
 
-import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
-import android.webkit.ConsoleMessage
-import android.webkit.WebChromeClient
 import android.webkit.WebViewClient
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alpermelkeli.cryptotrader.databinding.ActivityBotDetailsBinding
 import com.alpermelkeli.cryptotrader.model.Trade
-import com.alpermelkeli.cryptotrader.repository.apiRepository.ApiStorage
 import com.alpermelkeli.cryptotrader.repository.botRepository.BotService
 import com.alpermelkeli.cryptotrader.repository.botRepository.ram.BotManagerStorage
 import com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance.BinanceAccountOperations
-import com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.homefragment.adapter.TradesAdapter
+import com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.botfragments.adapter.TradesAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.CompletableFuture
 
-class BotDetailsActivity : AppCompatActivity() {
+class ManuelBotDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityBotDetailsBinding
     private lateinit var binanceAccountOperations : BinanceAccountOperations
     private lateinit var adapter: TradesAdapter
@@ -65,7 +59,7 @@ class BotDetailsActivity : AppCompatActivity() {
     }
 
     private fun setUpView(botManagerID:String){
-        val botManager = botManagerID.let { BotManagerStorage.getBotManager(it) }
+        val botManager = botManagerID.let { BotManagerStorage.getManuelBotManager(it) }
 
         botManager?.let {
             val id = botManager.id
@@ -165,10 +159,10 @@ class BotDetailsActivity : AppCompatActivity() {
 
     }
     private fun stopTradingBot(id: String) {
-        BotService.stopBot(id)
+        BotService.stopManuelBot(id)
     }
     private fun updateTradingBot(id:String,amount:Double,threshold:Double){
-        BotService.updateBot(id,amount,threshold)
+        BotService.updateManuelBot(id,amount,threshold)
     }
     private fun initializeAccountOperations(API_KEY:String,SECRET_KEY:String) {
         binanceAccountOperations = BinanceAccountOperations(API_KEY,SECRET_KEY)

@@ -1,4 +1,4 @@
-package com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.homefragment.adapter
+package com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.botfragments.adapter
 
 import android.view.View
 import android.widget.ImageView

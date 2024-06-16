@@ -1,6 +1,6 @@
-package com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.homefragment
+package com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.botfragments.manuelbotfragment
 
-import com.alpermelkeli.cryptotrader.model.BotManager
+import com.alpermelkeli.cryptotrader.model.ManuelBotManager
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
@@ -26,7 +26,7 @@ import com.alpermelkeli.cryptotrader.repository.apiRepository.ApiStorage
 import com.alpermelkeli.cryptotrader.repository.botRepository.ram.BotManagerStorage
 import com.google.android.material.materialswitch.MaterialSwitch
 
-class HomeFragment : Fragment() {
+class ManuelBotFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     /**
      * It's just for the view.
@@ -58,7 +58,7 @@ class HomeFragment : Fragment() {
         TODO: LOOK HERE.
          */
 
-        for((id,botManager) in BotManagerStorage.getBotManagers()){
+        for((id,botManager) in BotManagerStorage.getManuelBotManagers()){
             tradingBots.add(TradingBot(id, R.drawable.btc_vector, botManager.exchangeMarket, botManager.status, botManager.firstPairName, botManager.secondPairName, botManager.pairName,if(botManager.openPosition) "Açık" else "Kapalı"))
         }
 
@@ -94,7 +94,7 @@ class HomeFragment : Fragment() {
         if (position != -1) {
             tradingBots.removeAt(position)
             adapter.notifyItemRemoved(position)
-            BotManagerStorage.removeBotManager(tradingBot.id)
+            BotManagerStorage.removeManuelBotManager(tradingBot.id)
         }
     }
     private fun setupButtonListeners() {
@@ -140,9 +140,9 @@ class HomeFragment : Fragment() {
 
                 adapter.notifyItemInserted(tradingBots.size - 1)
 
-                val botManager = BotManager(id, firstPairName, secondPairName, pairName, threshold, amount, exchangeMarket, "Passive", binanceAccountOperations.apI_KEY, binanceAccountOperations.apI_SECRET,buySellSwitch.isChecked)
+                val manuelBotManager = ManuelBotManager(id, firstPairName, secondPairName, pairName, threshold, amount, exchangeMarket, "Passive", binanceAccountOperations.apI_KEY, binanceAccountOperations.apI_SECRET,buySellSwitch.isChecked)
 
-                BotManagerStorage.addBotManager(botManager)
+                BotManagerStorage.addManuelBotManager(manuelBotManager)
 
                 dialog.dismiss()
             }
@@ -169,7 +169,7 @@ class HomeFragment : Fragment() {
         }
     }
     private fun openBotDetailsActivity(tradingBot: TradingBot) {
-        val intent = Intent(context, BotDetailsActivity::class.java).apply {
+        val intent = Intent(context, ManuelBotDetailsActivity::class.java).apply {
             putExtra("id", tradingBot.id)
             putExtra("pairName", tradingBot.pairName)
             putExtra("API_KEY", binanceAccountOperations.apI_KEY)

@@ -1,16 +1,15 @@
 package com.alpermelkeli.cryptotrader.repository.botRepository.sqliteDatabase
 
-import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.alpermelkeli.cryptotrader.model.FollowBotManager
 
-class BotDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class FollowBotDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION), DataBaseHelper<FollowBotEntity> {
     companion object {
-        private const val DATABASE_NAME = "bots.db"
-        private const val DATABASE_VERSION = 5  // Versiyon güncellendi
-
-        private const val TABLE_NAME = "bots"
+        private const val DATABASE_NAME = "follow_bots.db"
+        private const val DATABASE_VERSION = 1  // Versiyon numarasını burada başlatabilirsiniz
+        private const val TABLE_NAME = "followBots"
         private const val COLUMN_ID = "id"
         private const val COLUMN_FIRST_PAIR_NAME = "firstPairName"
         private const val COLUMN_SECOND_PAIR_NAME = "secondPairName"
@@ -22,6 +21,8 @@ class BotDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
         private const val COLUMN_API_KEY = "apiKey"
         private const val COLUMN_SECRET_KEY = "secretKey"
         private const val COLUMN_OPEN_POSITION = "openPosition"
+        private const val COLUMN_DISTANCE_INTERVAL = "distanceInterval"
+        private const val COLUMN_FOLLOW_INTERVAL = "followInterval"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -37,36 +38,30 @@ class BotDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
             $COLUMN_STATUS TEXT,
             $COLUMN_API_KEY TEXT,
             $COLUMN_SECRET_KEY TEXT,
-            $COLUMN_OPEN_POSITION INTEGER
+            $COLUMN_OPEN_POSITION INTEGER,
+            $COLUMN_DISTANCE_INTERVAL REAL,
+            $COLUMN_FOLLOW_INTERVAL REAL
         )
     """
         db.execSQL(createTable)
     }
 
-
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        if (oldVersion < 4) {
-            db.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $COLUMN_API_KEY TEXT")
-            db.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $COLUMN_SECRET_KEY TEXT")
-        }
-        if (oldVersion < 5) {
-            db.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $COLUMN_OPEN_POSITION INTEGER")
-        }
+        // Versiyon güncellemeleri için gerekli kodlar buraya eklenebilir
     }
 
-    fun insertBot(bot: BotEntity) {
+    override fun insertBot(bot: FollowBotEntity) {
         val db = writableDatabase
         val insertQuery = """
-        INSERT OR REPLACE INTO $TABLE_NAME ($COLUMN_ID, $COLUMN_FIRST_PAIR_NAME, $COLUMN_SECOND_PAIR_NAME, $COLUMN_PAIR_NAME, $COLUMN_THRESHOLD, $COLUMN_AMOUNT, $COLUMN_EXCHANGE_MARKET, $COLUMN_STATUS, $COLUMN_API_KEY, $COLUMN_SECRET_KEY, $COLUMN_OPEN_POSITION)
-        VALUES ('${bot.id}', '${bot.firstPairName}', '${bot.secondPairName}', '${bot.pairName}', ${bot.threshold}, ${bot.amount}, '${bot.exchangeMarket}', '${bot.status}', '${bot.apiKey}', '${bot.secretKey}', ${if (bot.openPosition) 1 else 0})
+        INSERT OR REPLACE INTO $TABLE_NAME ($COLUMN_ID, $COLUMN_FIRST_PAIR_NAME, $COLUMN_SECOND_PAIR_NAME, $COLUMN_PAIR_NAME, $COLUMN_THRESHOLD, $COLUMN_AMOUNT, $COLUMN_EXCHANGE_MARKET, $COLUMN_STATUS, $COLUMN_API_KEY, $COLUMN_SECRET_KEY, $COLUMN_OPEN_POSITION, $COLUMN_DISTANCE_INTERVAL, $COLUMN_FOLLOW_INTERVAL)
+        VALUES ('${bot.id}', '${bot.firstPairName}', '${bot.secondPairName}', '${bot.pairName}', ${bot.threshold}, ${bot.amount}, '${bot.exchangeMarket}', '${bot.status}', '${bot.apiKey}', '${bot.secretKey}', ${if (bot.openPosition) 1 else 0}, ${bot.distanceInterval}, ${bot.followInterval})
     """
         db.execSQL(insertQuery)
         db.close()
     }
 
-
-    fun getAllBots(): List<BotEntity> {
-        val bots = mutableListOf<BotEntity>()
+    override fun getAllBots(): List<FollowBotEntity> {
+        val bots = mutableListOf<FollowBotEntity>()
         val db = readableDatabase
         val selectQuery = "SELECT * FROM $TABLE_NAME"
         val cursor = db.rawQuery(selectQuery, null)
@@ -83,7 +78,9 @@ class BotDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
                 val apiKey = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_API_KEY))
                 val secretKey = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SECRET_KEY))
                 val openPosition = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_OPEN_POSITION)) == 1
-                val bot = BotEntity(
+                val distanceInterval = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_DISTANCE_INTERVAL))
+                val followInterval = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_FOLLOW_INTERVAL))
+                val bot = FollowBotEntity(
                     id,
                     firstPairName,
                     secondPairName,
@@ -94,7 +91,9 @@ class BotDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
                     status,
                     apiKey,
                     secretKey,
-                    openPosition
+                    openPosition,
+                    distanceInterval,
+                    followInterval
                 )
                 bots.add(bot)
             } while (cursor.moveToNext())
@@ -104,11 +103,11 @@ class BotDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
         return bots
     }
 
-    fun getBotById(id: String): BotEntity? {
+    override fun getBotById(id: String): FollowBotEntity? {
         val db = readableDatabase
         val selectQuery = "SELECT * FROM $TABLE_NAME WHERE $COLUMN_ID = '$id'"
         val cursor = db.rawQuery(selectQuery, null)
-        var bot: BotEntity? = null
+        var bot: FollowBotEntity? = null
         if (cursor.moveToFirst()) {
             val firstPairName = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_FIRST_PAIR_NAME))
             val secondPairName = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SECOND_PAIR_NAME))
@@ -120,7 +119,9 @@ class BotDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
             val apiKey = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_API_KEY))
             val secretKey = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SECRET_KEY))
             val openPosition = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_OPEN_POSITION)) == 1
-            bot = BotEntity(
+            val distanceInterval = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_DISTANCE_INTERVAL))
+            val followInterval = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_FOLLOW_INTERVAL))
+            bot = FollowBotEntity(
                 id,
                 firstPairName,
                 secondPairName,
@@ -131,7 +132,9 @@ class BotDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
                 status,
                 apiKey,
                 secretKey,
-                openPosition
+                openPosition,
+                distanceInterval,
+                followInterval
             )
         }
         cursor.close()
@@ -139,8 +142,7 @@ class BotDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
         return bot
     }
 
-
-    fun removeBotById(id: String) {
+    override fun removeBotById(id: String) {
         val db = writableDatabase
         val deleteQuery = "DELETE FROM $TABLE_NAME WHERE $COLUMN_ID = ?"
         val statement = db.compileStatement(deleteQuery)
@@ -148,7 +150,8 @@ class BotDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
         statement.executeUpdateDelete()
         db.close()
     }
-    fun deleteAllBots() {
+
+    override fun deleteAllBots() {
         val db = writableDatabase
         val deleteQuery = "DELETE FROM $TABLE_NAME"
         db.execSQL(deleteQuery)

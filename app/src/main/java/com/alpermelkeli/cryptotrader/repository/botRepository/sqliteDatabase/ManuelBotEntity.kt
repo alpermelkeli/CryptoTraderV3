@@ -1,6 +1,6 @@
 package com.alpermelkeli.cryptotrader.repository.botRepository.sqliteDatabase
 
-data class BotEntity(
+data class ManuelBotEntity(
     val id: String,
     val firstPairName: String,
     val secondPairName: String,

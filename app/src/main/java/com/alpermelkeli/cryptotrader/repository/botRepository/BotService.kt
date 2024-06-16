@@ -5,17 +5,16 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
-import android.widget.QuickContactBadge
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.alpermelkeli.cryptotrader.R
-import com.alpermelkeli.cryptotrader.model.BotManager
+import com.alpermelkeli.cryptotrader.model.FollowBotManager
+import com.alpermelkeli.cryptotrader.model.ManuelBotManager
 import com.alpermelkeli.cryptotrader.repository.botRepository.ram.BotManagerStorage
 import com.alpermelkeli.cryptotrader.ui.HomeScreen.HomeScreen
 import kotlinx.coroutines.*
@@ -26,11 +25,13 @@ import kotlinx.coroutines.*
  * BotManagerStorage(RAM) that has BotManager objects that has management features inside.
  */
 class BotService : Service() {
-    private lateinit var botManagers : MutableMap<String,BotManager>
+    private lateinit var manuelBotManagers : MutableMap<String,ManuelBotManager>
+    private lateinit var followBotManagers : MutableMap<String, FollowBotManager>
     override fun onCreate() {
         super.onCreate()
         BotManagerStorage.initialize(applicationContext)
-        botManagers = BotManagerStorage.getBotManagers()
+        manuelBotManagers = BotManagerStorage.getManuelBotManagers()
+        followBotManagers = BotManagerStorage.getFollowBotManagers()
         createNotificationChannel()
         instance = this
         Log.d("BotService", "Service created")
@@ -63,7 +64,7 @@ class BotService : Service() {
         createNotificationChannel()
 
         val activeBotInfo = StringBuilder()
-        for ((id, botManager) in botManagers) {
+        for ((id, botManager) in manuelBotManagers) {
             if (botManager.status == "Active") {
                 activeBotInfo.append("${botManager.pairName}>${botManager.threshold}\n")
             }
@@ -96,17 +97,26 @@ class BotService : Service() {
     /*
     This function doesn't use because update function can control this.
      */
-    private fun startBot(id: String) {
-        val botManager = botManagers[id]!!
+    private fun startManuelBot(id: String) {
+        val botManager = manuelBotManagers[id]!!
         botManager.start()
         botManager.status = "Active"
-        BotManagerStorage.updateBotManager(id, botManager)
+        BotManagerStorage.updateManuelBotManager(id, botManager)
         Toast.makeText(applicationContext, "Bot started.", Toast.LENGTH_LONG).show()
             Log.d("BotService", "Bot $id started")
-        botManagers[id] = botManager
+        manuelBotManagers[id] = botManager
     }
-    private fun updateBot(id: String, amount: Double, threshold: Double) {
-        val botManager = botManagers[id]!!
+    private fun startFollowBot(id: String) {
+        val botManager =  followBotManagers[id]!!
+        botManager.start()
+        botManager.status = "Active"
+        BotManagerStorage.updateFollowBotManager(id,botManager)
+        Toast.makeText(applicationContext, "Bot started.", Toast.LENGTH_LONG).show()
+        Log.d("BotService", "Bot $id started")
+        followBotManagers[id] = botManager
+    }
+    private fun updateManuelBot(id: String, amount: Double, threshold: Double) {
+        val botManager = manuelBotManagers[id]!!
         if(botManager.status=="Active"){
             botManager.update(amount, threshold)
             Toast.makeText(application, "Bot updated.", Toast.LENGTH_LONG).show()
@@ -119,32 +129,60 @@ class BotService : Service() {
             botManager.status = "Active"
             Toast.makeText(application, "Bot initialized and resumed.", Toast.LENGTH_LONG).show()
         }
-        BotManagerStorage.updateBotManager(id, botManager)
-        botManagers[id] = botManager
+        BotManagerStorage.updateManuelBotManager(id, botManager)
+        manuelBotManagers[id] = botManager
     }
-    private fun stopBot(id: String) {
-        val botManager = botManagers[id]!!
+    private fun updateFollowBot(id: String, amount: Double, threshold: Double, distanceInterval:Double, followInterval:Double){
+        val botManager = followBotManagers[id]!!
+        if(botManager.status=="Active"){
+            botManager.update(amount, threshold, distanceInterval, followInterval)
+            Toast.makeText(application, "Bot updated.", Toast.LENGTH_LONG).show()
+            Log.d("BotService", "Bot $id updated")
+        }
+        else{
+            botManager.amount = amount
+            botManager.threshold = threshold
+            botManager.distanceInterval = distanceInterval
+            botManager.followInterval = followInterval
+            botManager.start()
+            botManager.status = "Active"
+            Toast.makeText(application, "Bot initialized and resumed.", Toast.LENGTH_LONG).show()
+        }
+        BotManagerStorage.updateFollowBotManager(id, botManager)
+        followBotManagers[id] = botManager
+    }
+    private fun stopManuelBot(id: String) {
+        val botManager = manuelBotManagers[id]!!
         botManager.stop()
         botManager.status = "Passive"
-        BotManagerStorage.updateBotManager(id, botManager)
+        BotManagerStorage.updateManuelBotManager(id, botManager)
         Toast.makeText(applicationContext, "Bot stopped", Toast.LENGTH_LONG).show()
         Log.d("BotService", "Bot $id stopped")
-        botManagers[id] = botManager
+        manuelBotManagers[id] = botManager
     }
-    private fun stopAllBots() {
+    private fun stopFollowBot(id: String){
+        val botManager = followBotManagers[id]!!
+        botManager.stop()
+        botManager.status = "Passive"
+        BotManagerStorage.updateFollowBotManager(id, botManager)
+        Toast.makeText(applicationContext, "Bot stopped", Toast.LENGTH_LONG).show()
+        Log.d("BotService", "Bot $id stopped")
+        followBotManagers[id] = botManager
+    }
+    private fun stopAllManuelBots() {
         CoroutineScope(Dispatchers.IO).launch {
             // Copy the botManagers to avoid ConcurrentModificationException
-            val botManagersCopy = botManagers.toMap()
+            val botManagersCopy = manuelBotManagers.toMap()
 
             for ((id, botManager) in botManagersCopy) {
                 botManager.stop()
                 botManager.status = "Passive"
-                BotManagerStorage.updateBotManager(id, botManager)
+                BotManagerStorage.updateManuelBotManager(id, botManager)
             }
 
             withContext(Dispatchers.Main) {
                 Log.d("BotService", "All bots stopped")
-                botManagers = BotManagerStorage.getBotManagers()
+                manuelBotManagers = BotManagerStorage.getManuelBotManagers()
                 stopSelf()
             }
         }
@@ -161,18 +199,29 @@ class BotService : Service() {
             instance.sendNotificationInternal(title, message)
         }
         fun stopService() {
-            instance.stopAllBots()
+            instance.stopAllManuelBots()
         }
-        fun startBot(botId: String){
-            instance.startBot(botId)
+        fun startManuelBot(botId: String){
+            instance.startManuelBot(botId)
         }
-        fun updateBot(botId: String, amount: Double,threshold: Double){
-            instance.updateBot(botId,amount,threshold)
+        fun startFollowBot(botId: String){
+            instance.startFollowBot(botId)
         }
-        fun stopBot(botId: String){
-            instance.stopBot(botId)
+        fun updateManuelBot(botId: String, amount: Double, threshold: Double){
+            instance.updateManuelBot(botId,amount,threshold)
+        }
+        fun updateFollowBot(botId: String,amount: Double,threshold: Double,distanceInterval: Double,followInterval: Double){
+            instance.updateFollowBot(botId,amount,threshold,distanceInterval, followInterval)
+        }
+        fun stopManuelBot(botId: String){
+            instance.stopManuelBot(botId)
+        }
+        fun stopFollowBot(botId: String){
+            instance.stopFollowBot(botId)
         }
 
     }
+
+
 
 }

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.alpermelkeli.cryptotrader.R
 import com.alpermelkeli.cryptotrader.model.TradingBot
-import com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.homefragment.adapter.TradingBotViewHolder
+import com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.botfragments.adapter.TradingBotViewHolder
 
 class TradingBotsAdapter(
     private val tradingBots: List<TradingBot>,
