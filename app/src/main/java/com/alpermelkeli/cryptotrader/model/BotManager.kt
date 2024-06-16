@@ -8,6 +8,7 @@ import com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance.BinanceWebSock
 import com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance.BinanceWebSocketManager.BinanceWebSocketListener
 
 class BotManager(
+    //V2
     val id: String,
     var firstPairName: String,
     var secondPairName: String,
