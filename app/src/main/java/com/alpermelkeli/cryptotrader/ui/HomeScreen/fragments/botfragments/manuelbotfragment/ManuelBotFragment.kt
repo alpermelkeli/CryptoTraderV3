@@ -149,7 +149,7 @@ class ManuelBotFragment : Fragment() {
 
     }
     private fun generateBotId(): String {
-        return "BOT_" + System.currentTimeMillis().toString()
+        return "MANUELBOT_" + System.currentTimeMillis().toString()
     }
     private fun updateSwitch(isChecked: Boolean, switch: MaterialSwitch, switchTextView: TextView) {
         val trackColor = if (isChecked) R.color.red else R.color.green
