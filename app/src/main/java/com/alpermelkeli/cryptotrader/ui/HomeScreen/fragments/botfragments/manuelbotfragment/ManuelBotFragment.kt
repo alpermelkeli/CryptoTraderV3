@@ -53,10 +53,6 @@ class ManuelBotFragment : Fragment() {
     }
     private fun setupRecyclerView() {
         tradingBots = mutableListOf()
-        
-        /*
-        TODO: LOOK HERE.
-         */
 
         for((id,botManager) in BotManagerStorage.getManuelBotManagers()){
             tradingBots.add(TradingBot(id, R.drawable.btc_vector, botManager.exchangeMarket, botManager.status, botManager.firstPairName, botManager.secondPairName, botManager.pairName,if(botManager.openPosition) "Açık" else "Kapalı"))
@@ -160,14 +156,6 @@ class ManuelBotFragment : Fragment() {
         if(isChecked) switchTextView.setText("SellBuy") else switchTextView.setText("BuySell")
         switch.trackTintList = ContextCompat.getColorStateList(requireContext(), trackColor)
     }
-    private fun updateAccountBalance() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val balance = binanceAccountOperations.accountBalance
-            withContext(Dispatchers.Main) {
-                binding.accountBalanceUsdtText.text = "%.2f USDT".format(balance)
-            }
-        }
-    }
     private fun openBotDetailsActivity(tradingBot: TradingBot) {
         val intent = Intent(context, ManuelBotDetailsActivity::class.java).apply {
             putExtra("id", tradingBot.id)
@@ -195,6 +183,5 @@ class ManuelBotFragment : Fragment() {
         BotManagerStorage.initialize(requireContext())
         setupRecyclerView()
         setupButtonListeners()
-        updateAccountBalance()
     }
 }
