@@ -1,57 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/fragment_background_color"
     tools:context=".ui.HomeScreen.fragments.profilefragment.ProfileFragment">
-
-    <ScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/profileConstraint"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        >
+
+        <ImageView
+            android:id="@+id/settingsButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/icon_settings"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout2"
+            android:layout_width="410dp"
+            android:layout_height="415dp"
+            android:layout_marginTop="40dp"
             android:orientation="vertical"
-            android:padding="40dp">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnProfileSettings"
+            <ImageView
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/profile_example" />
+
+            <TextView
+                android:id="@+id/profileIDText"
                 android:layout_width="match_parent"
-                android:background="@drawable/configure_bot_component_background"
+                android:layout_height="20dp"
+                android:text="test@gmail.com"
+                android:textAlignment="center"
                 android:textColor="@color/white"
-                android:fontFamily="@font/lato_bold"
-                android:layout_height="60dp"
-                android:textSize="18sp"
-                android:text="Profil Ayarları" />
+                android:textSize="15sp" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnApiSettings"
+            <LinearLayout
+                android:layout_width="275dp"
+                android:layout_height="96dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/profile_card_background"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="26dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/lato_bold"
+                    android:text="Mevcut Bakiye"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/profileBalanceText"
+                    android:layout_width="match_parent"
+                    android:layout_height="33dp"
+                    android:layout_marginTop="15dp"
+                    android:text="180.34 USDT"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/loadMoneyButton"
+                android:layout_width="275dp"
+                android:layout_height="96dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/profile_card_background"
+                android:orientation="vertical"
+
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="26dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/lato_bold"
+                    android:text="Abonelikler"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/icon_card"
+                     />
+
+
+            </LinearLayout>
+
+            <View
                 android:layout_width="match_parent"
-                android:background="@drawable/configure_bot_component_background"
-                android:layout_height="60dp"
-                android:textSize="18sp"
-                android:layout_marginTop="15dp"
-                android:textColor="@color/white"
-                android:fontFamily="@font/lato_bold"
-                android:text="API Ayarları" />
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/stopServiceButton"
-                android:layout_width="match_parent"
-                android:background="@drawable/passive_button_background"
-                android:layout_height="60dp"
-                android:textSize="18sp"
-                android:layout_marginTop="15dp"
-                android:textColor="@color/black"
-                android:fontFamily="@font/lato_bold"
-                android:text="Servisi Durdur."
-                />
-
-
+                android:layout_height="2dp"
+                android:layout_marginTop="14dp"
+                android:background="@color/white" />
 
         </LinearLayout>
 
-    </ScrollView>
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

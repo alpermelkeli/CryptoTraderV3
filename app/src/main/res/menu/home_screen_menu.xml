@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item
-        android:id="@+id/homeFragment"
+    <item android:id="@+id/homeFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:icon="@drawable/home_icon"
-        android:title="Ana Sayfa" />
+        android:title="Ana Sayfa"/>
     <item
-        android:id="@+id/marketFragment"
+        android:id="@+id/manuelBotFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:icon="@drawable/market_icon"
-        android:title="Profil"
+        android:title="Manuel Bot" />
+    <item
+        android:id="@+id/followBotFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/market_icon"
+        android:title="Takip Botu"
         />
     <item
         android:id="@+id/walletFragment"

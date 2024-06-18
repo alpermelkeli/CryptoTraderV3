@@ -73,10 +73,28 @@ class FollowBotManager(
         println("Sell threshold of $pairName = $sellThreshold")
         println("Open position of $pairName = $openPosition")
 
-        if (openPosition && currentPrice >= threshold + distanceInterval) {
+        if (currentPrice >= threshold + distanceInterval) {
+
             threshold += followInterval
-            thresholdManager.setSellThreshold(pairName, threshold)
+
+            if(openPosition){
+                thresholdManager.setSellThreshold(pairName, threshold)
+            }
+
+            else{
+                thresholdManager.setBuyThreshold(pairName, threshold)
+            }
             println("Threshold updated to $threshold due to price increase")
+        }
+        else if (currentPrice <= threshold - distanceInterval) {
+            threshold -= followInterval
+            if(openPosition){
+                thresholdManager.setSellThreshold(pairName,threshold)
+            }
+            else{
+                thresholdManager.setBuyThreshold(pairName,threshold)
+            }
+            println("Threshold updated to $threshold due to price decrease")
         }
 
         if (!openPosition && buyThreshold != null && currentPrice > buyThreshold) {
@@ -89,7 +107,6 @@ class FollowBotManager(
                         thresholdManager.removeBuyThreshold(pairName)
                         println("Buy order executed successfully.")
                         BotService.sendNotification("Buy Order", "Buy order for $pairName executed successfully.")
-
                     } else {
                         println("Buy order failed. Please check the logs for more details.")
                         BotService.sendNotification("Buy Order Failed", "Buy order for $pairName failed. Please check the logs for more details.")

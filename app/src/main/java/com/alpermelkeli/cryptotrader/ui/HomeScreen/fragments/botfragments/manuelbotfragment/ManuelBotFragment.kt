@@ -11,7 +11,6 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alpermelkeli.cryptotrader.R
-import com.alpermelkeli.cryptotrader.databinding.FragmentHomeBinding
 import com.alpermelkeli.cryptotrader.model.TradingBot
 import com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance.BinanceAccountOperations
 import com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.adapter.TradingBotsAdapter
@@ -22,12 +21,13 @@ import kotlinx.coroutines.withContext
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.alpermelkeli.cryptotrader.databinding.FragmentManuelBotBinding
 import com.alpermelkeli.cryptotrader.repository.apiRepository.ApiStorage
 import com.alpermelkeli.cryptotrader.repository.botRepository.ram.BotManagerStorage
 import com.google.android.material.materialswitch.MaterialSwitch
 
 class ManuelBotFragment : Fragment() {
-    private lateinit var binding: FragmentHomeBinding
+    private lateinit var binding: FragmentManuelBotBinding
     /**
      * It's just for the view.
      */
@@ -40,7 +40,7 @@ class ManuelBotFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentHomeBinding.inflate(layoutInflater)
+        binding = FragmentManuelBotBinding.inflate(layoutInflater)
         initializeAccountOperations()
         return binding.root
     }
