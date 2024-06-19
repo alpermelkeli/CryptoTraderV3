@@ -221,16 +221,6 @@ object BotManagerStorage {
             }
         }
     }
-    fun removeAllManuelBots() {
-        // Stop and remove all bots from memory
-        for (botManager in manuelBotManagers.values) {
-            botManager.stop()
-        }
-        manuelBotManagers.clear()
-
-        // Remove all bots from the database
-        manuelBotDbHelper.deleteAllBots()
-    }
 }
 
 

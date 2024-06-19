@@ -76,7 +76,7 @@ class FollowBotManager(
         if (currentPrice >= threshold + distanceInterval) {
 
             threshold += followInterval
-
+            BotManagerStorage.updateFollowBotManager(id,this)
             if(openPosition){
                 thresholdManager.setSellThreshold(pairName, threshold)
             }
@@ -88,6 +88,7 @@ class FollowBotManager(
         }
         else if (currentPrice <= threshold - distanceInterval) {
             threshold -= followInterval
+            BotManagerStorage.updateFollowBotManager(id,this)
             if(openPosition){
                 thresholdManager.setSellThreshold(pairName,threshold)
             }
@@ -106,15 +107,15 @@ class FollowBotManager(
                         thresholdManager.setSellThreshold(pairName, buyThreshold)
                         thresholdManager.removeBuyThreshold(pairName)
                         println("Buy order executed successfully.")
-                        BotService.sendNotification("Buy Order $id", "Buy order for $pairName executed successfully.")
+                        BotService.sendNotification("Buy $id", "Buy order for $pairName executed successfully.")
                     } else {
                         println("Buy order failed. Please check the logs for more details.")
-                        BotService.sendNotification("Buy Order Failed $id", "Buy order for $pairName failed. Please check the logs for more details.")
+                        BotService.sendNotification("Buy Failed $id", "Buy order for $pairName failed. Please check the logs for more details.")
                     }
                 }
                 .exceptionally { ex: Throwable ->
                     println("An error occurred during buy operation: " + ex.message)
-                    BotService.sendNotification("Buy Order Error $id", "An error occurred during buy operation for $pairName: ${ex.message}")
+                    BotService.sendNotification("Buy Error $id", "An error occurred during buy operation for $pairName: ${ex.message}")
                     ex.printStackTrace()
                     null
                 }
@@ -129,15 +130,15 @@ class FollowBotManager(
                         thresholdManager.removeSellThreshold(pairName)
                         thresholdManager.setBuyThreshold(pairName, threshold)
                         println("Sell order executed successfully.")
-                        BotService.sendNotification("Sell Order $id", "Sell order for $pairName executed successfully.")
+                        BotService.sendNotification("Sell $id", "Sell order for $pairName executed successfully.")
                     } else {
                         println("Sell order failed. Please check the logs for more details.")
-                        BotService.sendNotification("Sell Order Failed $id", "Sell order for $pairName failed. Please check the logs for more details.")
+                        BotService.sendNotification("Sell Failed $id", "Sell order for $pairName failed. Please check the logs for more details.")
                     }
                 }
                 .exceptionally { ex: Throwable ->
                     println("An error occurred during sell operation: " + ex.message)
-                    BotService.sendNotification("Sell Order Error $id", "An error occurred during sell operation for $pairName: ${ex.message}")
+                    BotService.sendNotification("Sell Error $id", "An error occurred during sell operation for $pairName: ${ex.message}")
                     ex.printStackTrace()
                     null
                 }

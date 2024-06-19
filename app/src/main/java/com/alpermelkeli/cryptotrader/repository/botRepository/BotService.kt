@@ -62,21 +62,13 @@ class BotService : Service() {
     }
     private fun createNotification(): Notification {
         createNotificationChannel()
-
-        val activeBotInfo = StringBuilder()
-        for ((id, botManager) in manuelBotManagers) {
-            if (botManager.status == "Active") {
-                activeBotInfo.append("${botManager.pairName}>${botManager.threshold}\n")
-            }
-        }
-
         val notificationIntent = Intent(this, HomeScreen::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("CryptoTrader")
+            .setContentTitle("CoinRobot")
             .setContentText("Servis Aktif!")
-            .setSmallIcon(R.drawable.market_icon)
+            .setSmallIcon(R.drawable.icon_without_background)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
             .build()
@@ -86,7 +78,7 @@ class BotService : Service() {
         val builder: NotificationCompat.Builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(message)
-            .setSmallIcon(R.drawable.btc_vector)
+            .setSmallIcon(R.drawable.icon_without_background)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
         notificationManager.notify(System.currentTimeMillis().toInt(), builder.build())
     }
@@ -207,7 +199,7 @@ class BotService : Service() {
     }
 
     /**
-     * Botla alakalı her şeyi buraya çekmeyi dene bot açma bot kapatma vs.
+     * It's like bot viewmodel you can use this functions without create instance of this class.
      */
     companion object {
         private const val CHANNEL_ID = "BotServiceChannel"
