@@ -40,6 +40,9 @@ class LoginActivity : AppCompatActivity() {
         binding.registerText.setOnClickListener {
             navigateToRegister()
         }
+        binding.forgotPasswordText.setOnClickListener{
+            navigateToForgotPassword()
+        }
 
         userViewModel.authResult.observe(this) { result ->
             val (success, message) = result
@@ -67,6 +70,10 @@ class LoginActivity : AppCompatActivity() {
 
     private fun navigateToRegister() {
         val intent = Intent(this, RegisterActivity::class.java)
+        startActivity(intent)
+    }
+    private fun navigateToForgotPassword(){
+        val intent = Intent(this, ForgotPasswordActivity::class.java)
         startActivity(intent)
     }
 }

@@ -1,7 +1,6 @@
 package com.alpermelkeli.cryptotrader.model
 
 import com.alpermelkeli.cryptotrader.repository.botRepository.BotService
-import com.alpermelkeli.cryptotrader.repository.botRepository.ThresholdManager
 import com.alpermelkeli.cryptotrader.repository.botRepository.ram.BotManagerStorage
 import com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance.BinanceAccountOperations
 import com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance.BinanceWebSocketManager
@@ -22,7 +21,8 @@ class ManuelBotManager(
 ) : BotManager(id, firstPairName, secondPairName, pairName, threshold, amount, exchangeMarket, status, apiKey, secretKey, openPosition) {
 
     private val binanceAccountOperations = BinanceAccountOperations(apiKey,secretKey)
-    private val thresholdManager: ThresholdManager = ThresholdManager()
+    private val thresholdManager: ThresholdManager =
+        ThresholdManager()
     private var webSocketManager: BinanceWebSocketManager? = null
 
     override fun start() {

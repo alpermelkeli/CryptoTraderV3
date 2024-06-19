@@ -29,6 +29,12 @@ class UserViewModel(context: Context) : ViewModel() {
             }
         }
     }
+    fun sendPasswordResetEmail(email: String) {
+        userRepository.sendPasswordResetEmail(email) { success, message ->
+            _authResult.postValue(Pair(success, message))
+        }
+    }
+
 
     fun loginUser(email: String, password: String) {
         userRepository.loginUser(email, password) { success, message ->

@@ -69,8 +69,12 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/registerButton"
         android:layout_width="350dp"
+        android:background="@drawable/dialog_cancel_button_background"
         android:layout_height="75dp"
-        android:text="Üye ol"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        android:text="Üye Ol"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"

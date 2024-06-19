@@ -11,10 +11,11 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="200dp"
-        android:layout_marginTop="50dp"
         android:layout_height="200dp"
+        android:layout_marginTop="28dp"
         android:src="@drawable/icon_without_background"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -51,24 +52,39 @@
         android:id="@+id/passwordEditText"
         android:layout_width="350dp"
         android:layout_height="75dp"
-        android:textColor="@color/white"
-        android:inputType="textPassword"
         android:layout_marginTop="28dp"
         android:background="@drawable/configure_bot_component_background"
         android:hint="Şifre"
+        android:inputType="textPassword"
         android:paddingStart="18dp"
+        android:textColor="@color/white"
         android:textColorHint="#7A7979"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailEditText" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/forgotPasswordText"
+        android:layout_width="110dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="4dp"
+        android:text="Şifremi unuttum"
+        android:textAlignment="textEnd"
+        android:textColor="@color/second_color"
+        app:layout_constraintEnd_toEndOf="@+id/passwordEditText"
+        app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/loginButton"
         android:layout_width="350dp"
         android:layout_height="75dp"
+        android:background="@drawable/dialog_cancel_button_background"
         android:layout_marginTop="50dp"
-        android:text="Giriş yap"
+        android:textAllCaps="false"
+        android:text="Giriş Yap"
+        android:textSize="15sp"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.508"
@@ -79,8 +95,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="17dp"
         android:orientation="horizontal"
+        android:paddingStart="19dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loginButton">
@@ -93,13 +110,15 @@
             android:textColor="@color/white"
             android:textSize="15sp" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
+
             android:id="@+id/registerText"
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:text="Üye ol"
             android:textAlignment="textStart"
-            android:textColor="#FFFF00"/>
+            android:textColor="@color/second_color"
+            />
 
 
     </LinearLayout>

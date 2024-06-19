@@ -34,11 +34,6 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater,container,false)
         initializeAccountOperations()
         setUpUserUI()
-
-
-
-
-
         return binding.root
     }
     private fun updateAccountBalance() {

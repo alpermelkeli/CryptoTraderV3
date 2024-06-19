@@ -5,4 +5,5 @@
     <color name="red">#FF0000</color>
     <color name="green">#00FF00</color>
     <color name="fragment_background_color">#1C1718</color>
+    <color name="second_color">#F8A75A</color>
 </resources>

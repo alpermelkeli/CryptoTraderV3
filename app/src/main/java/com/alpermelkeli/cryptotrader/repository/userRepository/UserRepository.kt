@@ -18,12 +18,18 @@ class UserRepository(private val context: Context) {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val firebaseUser: FirebaseUser? = auth.currentUser
-                firebaseUser?.let {
-                    val user = User(email, "", accountType)
-                    firestore.collection("users").document(it.uid)
-                        .set(user)
+                firebaseUser?.let { user ->
+                    val userModel = User(email, "", accountType)
+                    firestore.collection("users").document(user.uid)
+                        .set(userModel)
                         .addOnSuccessListener {
-                            callback(true, null)
+                            user.sendEmailVerification().addOnCompleteListener { emailTask ->
+                                if (emailTask.isSuccessful) {
+                                    callback(true, "Verification email sent")
+                                } else {
+                                    callback(false, emailTask.exception?.message)
+                                }
+                            }
                         }
                         .addOnFailureListener { e ->
                             callback(false, e.message)
@@ -35,11 +41,20 @@ class UserRepository(private val context: Context) {
         }
     }
 
+
+
+
     fun loginUser(email: String, password: String, callback: (Boolean, String?) -> Unit) {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                saveLoginState(true)
-                callback(true, null)
+                val firebaseUser: FirebaseUser? = auth.currentUser
+                if (firebaseUser != null && firebaseUser.isEmailVerified) {
+                    saveLoginState(true)
+                    callback(true, null)
+                } else {
+                    auth.signOut()
+                    callback(false, "Email is not verified. Please verify your email first.")
+                }
             } else {
                 callback(false, task.exception?.message)
             }
@@ -49,6 +64,15 @@ class UserRepository(private val context: Context) {
     fun logout() {
         auth.signOut()
         saveLoginState(false)
+    }
+    fun sendPasswordResetEmail(email: String, callback: (Boolean, String?) -> Unit) {
+        auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                callback(true, "Password reset email sent")
+            } else {
+                callback(false, task.exception?.message)
+            }
+        }
     }
 
     fun getCurrentUser() = auth.currentUser
