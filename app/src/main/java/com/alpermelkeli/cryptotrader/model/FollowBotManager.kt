@@ -106,15 +106,15 @@ class FollowBotManager(
                         thresholdManager.setSellThreshold(pairName, buyThreshold)
                         thresholdManager.removeBuyThreshold(pairName)
                         println("Buy order executed successfully.")
-                        BotService.sendNotification("Buy Order", "Buy order for $pairName executed successfully.")
+                        BotService.sendNotification("Buy Order $id", "Buy order for $pairName executed successfully.")
                     } else {
                         println("Buy order failed. Please check the logs for more details.")
-                        BotService.sendNotification("Buy Order Failed", "Buy order for $pairName failed. Please check the logs for more details.")
+                        BotService.sendNotification("Buy Order Failed $id", "Buy order for $pairName failed. Please check the logs for more details.")
                     }
                 }
                 .exceptionally { ex: Throwable ->
                     println("An error occurred during buy operation: " + ex.message)
-                    BotService.sendNotification("Buy Order Error", "An error occurred during buy operation for $pairName: ${ex.message}")
+                    BotService.sendNotification("Buy Order Error $id", "An error occurred during buy operation for $pairName: ${ex.message}")
                     ex.printStackTrace()
                     null
                 }
@@ -129,15 +129,15 @@ class FollowBotManager(
                         thresholdManager.removeSellThreshold(pairName)
                         thresholdManager.setBuyThreshold(pairName, threshold)
                         println("Sell order executed successfully.")
-                        BotService.sendNotification("Sell Order", "Sell order for $pairName executed successfully.")
+                        BotService.sendNotification("Sell Order $id", "Sell order for $pairName executed successfully.")
                     } else {
                         println("Sell order failed. Please check the logs for more details.")
-                        BotService.sendNotification("Sell Order Failed", "Sell order for $pairName failed. Please check the logs for more details.")
+                        BotService.sendNotification("Sell Order Failed $id", "Sell order for $pairName failed. Please check the logs for more details.")
                     }
                 }
                 .exceptionally { ex: Throwable ->
                     println("An error occurred during sell operation: " + ex.message)
-                    BotService.sendNotification("Sell Order Error", "An error occurred during sell operation for $pairName: ${ex.message}")
+                    BotService.sendNotification("Sell Order Error $id", "An error occurred during sell operation for $pairName: ${ex.message}")
                     ex.printStackTrace()
                     null
                 }

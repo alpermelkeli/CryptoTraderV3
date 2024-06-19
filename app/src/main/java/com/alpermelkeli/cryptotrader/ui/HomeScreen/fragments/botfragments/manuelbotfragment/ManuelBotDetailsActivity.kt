@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.alpermelkeli.cryptotrader.databinding.ActivityBotDetailsBinding
+import com.alpermelkeli.cryptotrader.databinding.ActivityManuelBotDetailsBinding
 import com.alpermelkeli.cryptotrader.model.Trade
 import com.alpermelkeli.cryptotrader.repository.botRepository.BotService
 import com.alpermelkeli.cryptotrader.repository.botRepository.ram.BotManagerStorage
@@ -20,7 +20,7 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.CompletableFuture
 
 class ManuelBotDetailsActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityBotDetailsBinding
+    private lateinit var binding: ActivityManuelBotDetailsBinding
     private lateinit var binanceAccountOperations : BinanceAccountOperations
     private lateinit var adapter: TradesAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +30,7 @@ class ManuelBotDetailsActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState)
 
-        binding = ActivityBotDetailsBinding.inflate(layoutInflater)
+        binding = ActivityManuelBotDetailsBinding.inflate(layoutInflater)
 
         val botManagerID = intent.getStringExtra("id")
 
