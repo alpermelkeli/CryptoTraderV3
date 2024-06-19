@@ -187,6 +187,24 @@ class BotService : Service() {
             }
         }
     }
+    private fun stopAllFollowBots() {
+        CoroutineScope(Dispatchers.IO).launch {
+            // Copy the botManagers to avoid ConcurrentModificationException
+            val botManagersCopy = followBotManagers.toMap()
+
+            for ((id, botManager) in botManagersCopy) {
+                botManager.stop()
+                botManager.status = "Passive"
+                BotManagerStorage.updateFollowBotManager(id, botManager)
+            }
+
+            withContext(Dispatchers.Main) {
+                Log.d("BotService", "All bots stopped")
+                followBotManagers = BotManagerStorage.getFollowBotManagers()
+                stopSelf()
+            }
+        }
+    }
 
     /**
      * Botla alakalı her şeyi buraya çekmeyi dene bot açma bot kapatma vs.
@@ -200,6 +218,7 @@ class BotService : Service() {
         }
         fun stopService() {
             instance.stopAllManuelBots()
+            instance.stopAllFollowBots()
         }
         fun startManuelBot(botId: String){
             instance.startManuelBot(botId)

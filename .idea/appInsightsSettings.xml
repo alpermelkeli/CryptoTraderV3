@@ -28,10 +28,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.alpermelkeli.cryptotrader" />
+                  <option name="mobileSdkAppId" value="1:826779048425:android:5b658bb3955996b04e1378" />
+                  <option name="projectId" value="coinrobot-8469c" />
+                  <option name="projectNumber" value="826779048425" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

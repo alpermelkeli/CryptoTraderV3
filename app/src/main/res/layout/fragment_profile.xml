@@ -43,6 +43,7 @@
             <TextView
                 android:id="@+id/profileIDText"
                 android:layout_width="match_parent"
+                android:fontFamily="@font/lato_bold"
                 android:layout_height="20dp"
                 android:text="test@gmail.com"
                 android:textAlignment="center"
@@ -75,6 +76,7 @@
                     android:layout_height="33dp"
                     android:layout_marginTop="15dp"
                     android:text="Yükleniyor..."
+                    android:fontFamily="@font/epilogue_semibold"
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="22sp"
