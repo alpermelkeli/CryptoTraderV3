@@ -5,12 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.alpermelkeli.cryptotrader.R
 import com.alpermelkeli.cryptotrader.databinding.FragmentProfileBinding
 import com.alpermelkeli.cryptotrader.repository.apiRepository.ApiStorage
 import com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance.BinanceAccountOperations
 import com.alpermelkeli.cryptotrader.ui.HomeScreen.HomeScreen
+import com.alpermelkeli.cryptotrader.viewmodel.UserViewModel
+import com.alpermelkeli.cryptotrader.viewmodel.UserViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,13 +23,15 @@ import kotlinx.coroutines.withContext
 class ProfileFragment : Fragment() {
     private lateinit var binding : FragmentProfileBinding
     private lateinit var binanceAccountOperations: BinanceAccountOperations
-
-
+    private val userViewModel: UserViewModel by viewModels {
+        UserViewModelFactory(requireContext())
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         initializeAccountOperations()
+        setUpUserUI()
         binding.settingsButton.setOnClickListener{
             navigateToSettingsFragment()
         }
@@ -66,5 +72,15 @@ class ProfileFragment : Fragment() {
     private fun onAccountOperationsInitialized() {
         updateAccountBalance()
     }
+    private fun setUpUserUI(){
+        userViewModel.userDocument.observe(viewLifecycleOwner, Observer { document ->
+            if (document != null) {
+                binding.profileIDText.text = document.get("email").toString()
+            }
+            else {
 
+            }
+        })
+        userViewModel.fetchUserDocument()
+    }
 }

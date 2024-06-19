@@ -12,11 +12,14 @@ class UserViewModel(context: Context) : ViewModel() {
     private val userRepository: UserRepository = UserRepository(context)
 
     private val _user = MutableLiveData<FirebaseUser?>()
-
     val user: LiveData<FirebaseUser?> get() = _user
 
     private val _authResult = MutableLiveData<Pair<Boolean, String?>>()
     val authResult: LiveData<Pair<Boolean, String?>> get() = _authResult
+
+    private val _userDocument = MutableLiveData<Map<String, Any>?>()
+    val userDocument: LiveData<Map<String, Any>?> get() = _userDocument
+
 
     fun registerUser(email: String, password: String, accountType: String) {
         userRepository.registerUser(email, password, accountType) { success, message ->
@@ -47,5 +50,13 @@ class UserViewModel(context: Context) : ViewModel() {
 
     fun isLoggedIn(): Boolean {
         return userRepository.isLoggedIn()
+    }
+
+    fun fetchUserDocument() {
+        userRepository.getUserDocument { success, message, data ->
+            if (success) {
+                _userDocument.postValue(data)
+            }
+        }
     }
 }
