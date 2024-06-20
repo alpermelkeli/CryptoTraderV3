@@ -3,16 +3,12 @@ package com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.botfragments.follo
 import android.os.Bundle
 import android.view.WindowManager
 import android.webkit.WebViewClient
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.alpermelkeli.cryptotrader.R
 import com.alpermelkeli.cryptotrader.databinding.ActivityFollowBotDetailsBinding
-import com.alpermelkeli.cryptotrader.model.Trade
+import com.alpermelkeli.cryptotrader.model.view.Trade
 import com.alpermelkeli.cryptotrader.repository.botRepository.BotService
 import com.alpermelkeli.cryptotrader.repository.botRepository.ram.BotManagerStorage
 import com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance.BinanceAccountOperations

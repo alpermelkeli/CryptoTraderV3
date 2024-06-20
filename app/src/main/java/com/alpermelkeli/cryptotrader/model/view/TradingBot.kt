@@ -1,4 +1,4 @@
-package com.alpermelkeli.cryptotrader.model
+package com.alpermelkeli.cryptotrader.model.view
 
 /**
  * This class represent recycler view just item not use to do something at backend except getting id from home fragment.

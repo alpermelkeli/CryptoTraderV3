@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.alpermelkeli.cryptotrader.R
-import com.alpermelkeli.cryptotrader.model.TradingBot
+import com.alpermelkeli.cryptotrader.model.view.TradingBot
 import com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.botfragments.adapter.TradingBotViewHolder
 
 class TradingBotsAdapter(

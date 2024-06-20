@@ -1,6 +1,6 @@
 package com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance;
 
-import com.alpermelkeli.cryptotrader.model.Trade;
+import com.alpermelkeli.cryptotrader.model.view.Trade;
 import com.alpermelkeli.cryptotrader.repository.cryptoApi.AccountOperations;
 
 import okhttp3.*;

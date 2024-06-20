@@ -3,7 +3,7 @@ package com.alpermelkeli.cryptotrader.repository.cryptoApi;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import com.alpermelkeli.cryptotrader.model.Trade;
+import com.alpermelkeli.cryptotrader.model.view.Trade;
 
 public interface AccountOperations {
     CompletableFuture<Boolean> buyCoin(String symbol, double quantity);

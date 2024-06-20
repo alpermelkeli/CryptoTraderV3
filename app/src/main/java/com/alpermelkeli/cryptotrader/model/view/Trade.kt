@@ -1,4 +1,4 @@
-package com.alpermelkeli.cryptotrader.model
+package com.alpermelkeli.cryptotrader.model.view
 
 data class Trade(
     val time:String,

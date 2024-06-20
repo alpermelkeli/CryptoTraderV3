@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.alpermelkeli.cryptotrader.R
-import com.alpermelkeli.cryptotrader.model.Trade
+import com.alpermelkeli.cryptotrader.model.view.Trade
 
 class TradesAdapter(private val tradeList: List<Trade>) : RecyclerView.Adapter<TradeViewHolder>() {
 

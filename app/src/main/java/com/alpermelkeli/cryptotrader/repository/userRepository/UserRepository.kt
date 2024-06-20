@@ -81,7 +81,8 @@ class UserRepository(private val context: Context) {
     }
 
     fun isLoggedIn(): Boolean {
-        return sharedPreferences.getBoolean("isLoggedIn", false)
+        val currentUser = auth.currentUser
+        return currentUser != null && sharedPreferences.getBoolean("isLoggedIn", false)
     }
 
     fun getUserDocument(callback: (Boolean, String?, Map<String, Any>?) -> Unit) {

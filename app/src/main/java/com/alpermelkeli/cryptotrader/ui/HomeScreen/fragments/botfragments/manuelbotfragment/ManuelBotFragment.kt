@@ -11,7 +11,7 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alpermelkeli.cryptotrader.R
-import com.alpermelkeli.cryptotrader.model.TradingBot
+import com.alpermelkeli.cryptotrader.model.view.TradingBot
 import com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance.BinanceAccountOperations
 import com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.adapter.TradingBotsAdapter
 import kotlinx.coroutines.CoroutineScope

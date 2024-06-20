@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alpermelkeli.cryptotrader.databinding.ActivityManuelBotDetailsBinding
-import com.alpermelkeli.cryptotrader.model.Trade
+import com.alpermelkeli.cryptotrader.model.view.Trade
 import com.alpermelkeli.cryptotrader.repository.botRepository.BotService
 import com.alpermelkeli.cryptotrader.repository.botRepository.ram.BotManagerStorage
 import com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance.BinanceAccountOperations
