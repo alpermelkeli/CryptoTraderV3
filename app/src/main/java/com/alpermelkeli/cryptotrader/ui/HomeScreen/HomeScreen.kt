@@ -6,9 +6,12 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PowerManager
+import android.provider.Settings
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -25,6 +28,7 @@ class HomeScreen : AppCompatActivity() {
     private lateinit var binding: ActivityHomeScreenBinding
     private val REQUEST_FOREGROUND_PERMISSION = 1
     private val REQUEST_DATA_SYNC_PERMISSION = 2
+    private val REQUEST_IGNORE_BATTERY_OPTIMIZATIONS = 3
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.setFlags(
@@ -35,6 +39,7 @@ class HomeScreen : AppCompatActivity() {
         binding = ActivityHomeScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
         checkAndRequestForegroundServicePermission()
+        checkAndRequestBackgroundPermission()
         startBotServiceIfNotRunning()
         createBottomNavigation()
     }
@@ -75,7 +80,7 @@ class HomeScreen : AppCompatActivity() {
 
     private fun checkAndRequestForegroundServicePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            if (applicationContext?.checkSelfPermission(Manifest.permission.FOREGROUND_SERVICE) != PackageManager.PERMISSION_GRANTED) {
+            if (applicationContext.checkSelfPermission(Manifest.permission.FOREGROUND_SERVICE) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(arrayOf(Manifest.permission.FOREGROUND_SERVICE), REQUEST_FOREGROUND_PERMISSION)
             } else {
                 checkAndRequestDataSyncPermission()
@@ -87,8 +92,39 @@ class HomeScreen : AppCompatActivity() {
 
     private fun checkAndRequestDataSyncPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (applicationContext?.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            if (applicationContext.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), REQUEST_DATA_SYNC_PERMISSION)
+            }
+        }
+    }
+
+    private fun isIgnoringBatteryOptimizations(): Boolean {
+        val packageName = packageName
+        val pm = getSystemService(PowerManager::class.java)
+        return pm.isIgnoringBatteryOptimizations(packageName)
+    }
+
+    private fun requestIgnoreBatteryOptimizations() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+            intent.data = Uri.parse("package:$packageName")
+            startActivity(intent)
+        }
+    }
+
+    private fun showPermissionExplanation() {
+        AlertDialog.Builder(this)
+            .setTitle("Arka Planda Çalışma İzni Gerekli")
+            .setMessage("Bu uygulama, doğru çalışması için arka planda çalışma iznine ihtiyaç duymaktadır.")
+            .setPositiveButton("İzin Ver") { _, _ -> requestIgnoreBatteryOptimizations() }
+            .setNegativeButton("İptal", null)
+            .show()
+    }
+
+    private fun checkAndRequestBackgroundPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!isIgnoringBatteryOptimizations()) {
+                showPermissionExplanation()
             }
         }
     }
@@ -110,7 +146,7 @@ class HomeScreen : AppCompatActivity() {
             }
             REQUEST_DATA_SYNC_PERMISSION -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+                    // Additional logic if needed
                 } else {
                     AlertDialog.Builder(applicationContext)
                         .setMessage("Data sync permission is required to start the trading bot.")

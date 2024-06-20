@@ -8,7 +8,7 @@ import com.alpermelkeli.cryptotrader.model.FollowBotManager
 class FollowBotDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION), DataBaseHelper<FollowBotEntity> {
     companion object {
         private const val DATABASE_NAME = "follow_bots.db"
-        private const val DATABASE_VERSION = 1  // Versiyon numarasını burada başlatabilirsiniz
+        private const val DATABASE_VERSION = 1
         private const val TABLE_NAME = "followBots"
         private const val COLUMN_ID = "id"
         private const val COLUMN_FIRST_PAIR_NAME = "firstPairName"

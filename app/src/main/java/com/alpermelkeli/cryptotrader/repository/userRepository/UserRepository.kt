@@ -41,9 +41,6 @@ class UserRepository(private val context: Context) {
         }
     }
 
-
-
-
     fun loginUser(email: String, password: String, callback: (Boolean, String?) -> Unit) {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -65,6 +62,7 @@ class UserRepository(private val context: Context) {
         auth.signOut()
         saveLoginState(false)
     }
+
     fun sendPasswordResetEmail(email: String, callback: (Boolean, String?) -> Unit) {
         auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
             if (task.isSuccessful) {
