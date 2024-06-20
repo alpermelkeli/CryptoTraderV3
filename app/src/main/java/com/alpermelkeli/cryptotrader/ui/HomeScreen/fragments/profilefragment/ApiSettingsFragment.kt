@@ -15,6 +15,7 @@ import com.alpermelkeli.cryptotrader.repository.apiRepository.ApiStorage
 import com.alpermelkeli.cryptotrader.repository.apiRepository.sqliteDatabase.ApiEntity
 import com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.profilefragment.adapter.ApiAdapter
 import com.alpermelkeli.cryptotrader.R
+import com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.profilefragment.adapter.CenterItemDecoration
 
 class ApiSettingsFragment : Fragment() {
     private lateinit var binding: FragmentApiSettingsBinding
@@ -73,6 +74,7 @@ class ApiSettingsFragment : Fragment() {
         )
         binding.apiRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.apiRecyclerView.adapter = apiAdapter
+        binding.apiRecyclerView.addItemDecoration(CenterItemDecoration())
     }
 
     private fun addNewApi(newApi: ApiEntity) {

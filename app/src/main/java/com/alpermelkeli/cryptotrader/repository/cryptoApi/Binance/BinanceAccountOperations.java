@@ -224,7 +224,7 @@ public class BinanceAccountOperations implements AccountOperations{
                         double amount = tradeJson.getDouble("qty");
                         boolean isBuyer = tradeJson.getBoolean("isBuyer");
                         boolean isBestMatch = tradeJson.getBoolean("isBestMatch");
-                        String time = convertMillisToDate(timeMillis);
+                        String time = convertMillisToDate(timeMillis).split(" ")[1];
                         if(isBestMatch){
                             Trade trade = new Trade(time, price, amount,isBuyer);
                             tradeHistory.add(trade);

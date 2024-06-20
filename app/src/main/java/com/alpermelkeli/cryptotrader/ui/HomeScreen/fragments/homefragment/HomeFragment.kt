@@ -34,6 +34,8 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater,container,false)
         initializeAccountOperations()
         setUpUserUI()
+
+
         return binding.root
     }
     private fun updateAccountBalance() {
@@ -56,11 +58,9 @@ class HomeFragment : Fragment() {
             }
         }
     }
-
     private fun onAccountOperationsInitialized() {
         updateAccountBalance()
     }
-
     private fun setUpUserUI(){
         userViewModel.userDocument.observe(viewLifecycleOwner, Observer { document ->
             if (document != null) {

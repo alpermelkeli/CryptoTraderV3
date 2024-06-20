@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.alpermelkeli.cryptotrader.R
 import com.alpermelkeli.cryptotrader.databinding.FragmentSettingsBinding
@@ -30,7 +31,7 @@ class SettingsFragment : Fragment() {
         binding = FragmentSettingsBinding.inflate(inflater, container, false)
 
         binding.btnProfileSettings.setOnClickListener {
-
+            navigateToProfileSettings()
         }
 
         binding.btnApiSettings.setOnClickListener {
@@ -51,10 +52,24 @@ class SettingsFragment : Fragment() {
         userViewModel.logout()
         activity?.finish()
     }
+    private fun navigateToProfileSettings(){
+        val navOptions = NavOptions.Builder()
+            .setEnterAnim(R.anim.slide_in_right)
+            .setExitAnim(R.anim.slide_out_left)
+            .setPopEnterAnim(R.anim.slide_in_left)
+            .setPopExitAnim(R.anim.slide_out_right)
+            .build()
+        findNavController().navigate(R.id.action_settingsFragment_to_profileSettingsFragment,null,navOptions)
+    }
 
     private fun navigateToApiSettings() {
-        findNavController().navigate(R.id.action_settingsFragment_to_apiSettingsFragment)
-        (activity as? HomeScreen)?.hideBottomNavigationView()
+        val navOptions = NavOptions.Builder()
+            .setEnterAnim(R.anim.slide_in_right)
+            .setExitAnim(R.anim.slide_out_left)
+            .setPopEnterAnim(R.anim.slide_in_left)
+            .setPopExitAnim(R.anim.slide_out_right)
+            .build()
+        findNavController().navigate(R.id.action_settingsFragment_to_apiSettingsFragment,null,navOptions)
     }
 
 

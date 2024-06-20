@@ -27,7 +27,7 @@ class ManuelBotDetailsActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            WindowManager.LayoutParams.FLAG_FULLSCREEN)
         super.onCreate(savedInstanceState)
 
         binding = ActivityManuelBotDetailsBinding.inflate(layoutInflater)
@@ -60,7 +60,6 @@ class ManuelBotDetailsActivity : AppCompatActivity() {
 
     private fun setUpView(botManagerID:String){
         val botManager = botManagerID.let { BotManagerStorage.getManuelBotManager(it) }
-
         botManager?.let {
             val id = botManager.id
             val firstPairName = botManager.firstPairName

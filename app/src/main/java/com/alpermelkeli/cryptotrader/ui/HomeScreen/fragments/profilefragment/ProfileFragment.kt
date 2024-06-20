@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.alpermelkeli.cryptotrader.R
 import com.alpermelkeli.cryptotrader.databinding.FragmentProfileBinding
@@ -45,8 +46,14 @@ class ProfileFragment : Fragment() {
         (activity as? HomeScreen)?.showBottomNavigationView()
     }
 
-    private fun navigateToSettingsFragment(){
-        findNavController().navigate(R.id.action_profileFragment_to_settingsFragment)
+    private fun navigateToSettingsFragment() {
+        val navOptions = NavOptions.Builder()
+            .setEnterAnim(R.anim.slide_in_right)
+            .setExitAnim(R.anim.slide_out_left)
+            .setPopEnterAnim(R.anim.slide_in_left)
+            .setPopExitAnim(R.anim.slide_out_right)
+            .build()
+        findNavController().navigate(R.id.action_profileFragment_to_settingsFragment, null, navOptions)
         (activity as? HomeScreen)?.hideBottomNavigationView()
     }
     private fun initializeAccountOperations() {

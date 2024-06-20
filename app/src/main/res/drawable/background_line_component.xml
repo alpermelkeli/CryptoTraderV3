@@ -17,7 +17,7 @@
         android:pathData="M0 41.32s66.97 77.56 130.43 72.5c64.83-5.17 41.05-90.38 105.97-95 57.56-4.09 67.66 70.73 123.63 60 36.5-6.99 69.97-49 69.97-49"/>
     <path
         android:fillAlpha="0.5"
-        android:strokeColor="#FFE1AF20"
+        android:strokeColor="@color/second_color"
         android:strokeAlpha="0.5"
         android:strokeWidth="1"
         android:pathData="M0 60.32s66.97 77.56 130.43 72.5c64.83-5.17 41.05-90.38 105.97-95 57.56-4.09 67.66 70.73 123.63 60 36.5-6.99 69.97-49 69.97-49"/>

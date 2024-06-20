@@ -42,8 +42,8 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/newTradeBotButton"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/new_tradebot_button" />
 
@@ -51,6 +51,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="15dp"
                 android:text="Yeni"
+                android:fontFamily="@font/epilogue_semibold"
+                android:layout_marginTop="10dp"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="10sp" />
