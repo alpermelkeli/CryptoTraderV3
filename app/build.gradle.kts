@@ -10,6 +10,10 @@ android {
 
     buildFeatures {
         viewBinding = true
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion  = "1.5.10"
     }
 
     defaultConfig {
@@ -49,9 +53,15 @@ android {
 }
 
 dependencies {
+    implementation ("androidx.compose.ui:ui")
+    implementation ("androidx.compose.material:material")
+    implementation ("androidx.compose.runtime:runtime")
+    implementation ("androidx.activity:activity-compose:1.9.0")
+    implementation (platform("androidx.compose:compose-bom:2024.06.00"))
+    implementation ("androidx.compose.ui:ui-graphics")
+    implementation ("androidx.compose.ui:ui-tooling-preview")
     implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
     implementation("com.google.firebase:firebase-analytics")
-
     implementation ("androidx.sqlite:sqlite:2.1.0")
     implementation ("com.google.code.gson:gson:2.10.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.1")
