@@ -14,12 +14,12 @@ class UserRepository(private val context: Context) {
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
     private val editor: SharedPreferences.Editor = sharedPreferences.edit()
 
-    fun registerUser(email: String, password: String, accountType: String, callback: (Boolean, String?) -> Unit) {
+    fun registerUser(email: String, password: String, accountType: String, name:String, surname:String, phoneNumber:String, callback: (Boolean, String?) -> Unit) {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val firebaseUser: FirebaseUser? = auth.currentUser
                 firebaseUser?.let { user ->
-                    val userModel = User(email, "", accountType)
+                    val userModel = User(email, "", accountType, name, surname, phoneNumber)
                     firestore.collection("users").document(user.uid)
                         .set(userModel)
                         .addOnSuccessListener {

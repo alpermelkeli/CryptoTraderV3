@@ -21,8 +21,8 @@ class UserViewModel(context: Context) : ViewModel() {
     val userDocument: LiveData<Map<String, Any>?> get() = _userDocument
 
 
-    fun registerUser(email: String, password: String, accountType: String) {
-        userRepository.registerUser(email, password, accountType) { success, message ->
+    fun registerUser(email: String, password: String, accountType: String, name:String, surname:String, phoneNumber:String) {
+        userRepository.registerUser(email, password, accountType, name, surname, phoneNumber) { success, message ->
             _authResult.postValue(Pair(success, message))
             if (success) {
                 _user.postValue(userRepository.getCurrentUser())

@@ -12,6 +12,8 @@
         android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:fontFamily="@font/lato_bold"
+        android:paddingTop="10dp"
         android:text="Üye ol"
         android:textAlignment="center"
         android:textColor="@color/white"
@@ -21,13 +23,29 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/emailEditText"
+        android:id="@+id/phoneNumberEditText"
         android:layout_width="350dp"
-        android:layout_height="75dp"
-        android:layout_marginTop="128dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/configure_bot_component_background"
-        android:hint="E mail adresin"
-        android:inputType="textEmailAddress"
+        android:hint="Telefon Numarası"
+        android:inputType="number"
+        android:paddingStart="18dp"
+        android:textColor="@color/white"
+        android:textColorHint="#7A7979"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emailEditText" />
+
+    <EditText
+        android:id="@+id/nameEditText"
+        android:layout_width="350dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/configure_bot_component_background"
+        android:hint="İsim"
+        android:inputType="text"
         android:paddingStart="18dp"
         android:textColor="@color/white"
         android:textColorHint="#7A7979"
@@ -37,9 +55,41 @@
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <EditText
+        android:id="@+id/surnameEditText"
+        android:layout_width="350dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/configure_bot_component_background"
+        android:hint="Soyisim"
+        android:inputType="text"
+        android:paddingStart="18dp"
+        android:textColor="@color/white"
+        android:textColorHint="#7A7979"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nameEditText" />
+
+    <EditText
+        android:id="@+id/emailEditText"
+        android:layout_width="350dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/configure_bot_component_background"
+        android:hint="E mail adresin"
+        android:inputType="textEmailAddress"
+        android:paddingStart="18dp"
+        android:textColor="@color/white"
+        android:textColorHint="#7A7979"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/surnameEditText" />
+
+    <EditText
         android:id="@+id/passwordEditText"
         android:layout_width="350dp"
-        android:layout_height="75dp"
+        android:layout_height="60dp"
         android:layout_marginTop="24dp"
         android:background="@drawable/configure_bot_component_background"
         android:hint="Şifreni oluştur"
@@ -48,13 +98,14 @@
         android:textColor="@color/white"
         android:textColorHint="#7A7979"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/phoneNumberEditText" />
 
     <EditText
         android:id="@+id/passwordConfirmEditText"
         android:layout_width="350dp"
-        android:layout_height="75dp"
+        android:layout_height="60dp"
         android:layout_marginTop="24dp"
         android:background="@drawable/configure_bot_component_background"
         android:hint="Şifreni Onayla"

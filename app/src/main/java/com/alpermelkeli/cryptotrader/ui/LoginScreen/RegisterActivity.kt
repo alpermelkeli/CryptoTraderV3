@@ -39,7 +39,7 @@ class RegisterActivity : AppCompatActivity() {
         // Observe auth result live data
         userViewModel.authResult.observe(this, Observer { result ->
             if (result.first) {
-                Toast.makeText(this, "Kayıt işlemi başarılı!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Kayıt işlemi başarılı! E-postanızı onaylayıp giriş yapabilirsiniz.", Toast.LENGTH_SHORT).show()
                 navigateToLogin()
             } else {
                 Toast.makeText(this, result.second ?: "Bir hata oluştu!", Toast.LENGTH_SHORT).show()
@@ -48,11 +48,22 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun register() {
-        userViewModel.registerUser(
-            binding.emailEditText.text.toString(),
-            binding.passwordEditText.text.toString(),
-            "Trade"
-        )
+        var email =  binding.emailEditText.text.toString()
+        var password = binding.passwordEditText.text.toString()
+        var passwordConfirm = binding.passwordConfirmEditText.text.toString()
+        var accountType = "Trade"
+        var name = binding.nameEditText.text.toString()
+        var surname = binding.surnameEditText.text.toString()
+        var phoneNumber = binding.phoneNumberEditText.text.toString()
+
+        if(email.isNotEmpty() && password.isNotEmpty() && name.isNotEmpty() && surname.isNotEmpty() && phoneNumber.isNotEmpty()){
+
+            if(passwordConfirm == password) userViewModel.registerUser(email, password, accountType, name, surname, phoneNumber)
+
+            else Toast.makeText(this, "Şifreler uyuşmuyor", Toast.LENGTH_SHORT).show()
+        }
+        else Toast.makeText(this, "Hiçbir alan boş bırakılamaz", Toast.LENGTH_SHORT).show()
+
     }
 
     private fun navigateToLogin() {
