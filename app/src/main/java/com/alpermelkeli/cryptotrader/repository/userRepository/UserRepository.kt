@@ -11,8 +11,6 @@ class UserRepository(private val context: Context) {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val sharedPreferences: SharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-    private val editor: SharedPreferences.Editor = sharedPreferences.edit()
 
     fun registerUser(email: String, password: String, accountType: String, name:String, surname:String, phoneNumber:String, callback: (Boolean, String?) -> Unit) {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
@@ -46,7 +44,6 @@ class UserRepository(private val context: Context) {
             if (task.isSuccessful) {
                 val firebaseUser: FirebaseUser? = auth.currentUser
                 if (firebaseUser != null && firebaseUser.isEmailVerified) {
-                    saveLoginState(true)
                     callback(true, null)
                 } else {
                     auth.signOut()
@@ -60,7 +57,6 @@ class UserRepository(private val context: Context) {
 
     fun logout() {
         auth.signOut()
-        saveLoginState(false)
     }
 
     fun sendPasswordResetEmail(email: String, callback: (Boolean, String?) -> Unit) {
@@ -75,14 +71,9 @@ class UserRepository(private val context: Context) {
 
     fun getCurrentUser() = auth.currentUser
 
-    private fun saveLoginState(isLoggedIn: Boolean) {
-        editor.putBoolean("isLoggedIn", isLoggedIn)
-        editor.apply()
-    }
-
     fun isLoggedIn(): Boolean {
         val currentUser = auth.currentUser
-        return currentUser != null && sharedPreferences.getBoolean("isLoggedIn", false)
+        return currentUser != null
     }
 
     fun getUserDocument(callback: (Boolean, String?, Map<String, Any>?) -> Unit) {

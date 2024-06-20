@@ -59,7 +59,8 @@ class LoginActivity : AppCompatActivity() {
     private fun login() {
         val email = binding.emailEditText.text.toString()
         val password = binding.passwordEditText.text.toString()
-        userViewModel.loginUser(email, password)
+        if(email.isNotEmpty() && password.isNotEmpty())userViewModel.loginUser(email, password)
+        else Toast.makeText(this, "Alanlar Boş bırakılamaz", Toast.LENGTH_SHORT).show()
     }
 
     private fun navigateToHomeScreen() {
