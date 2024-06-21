@@ -83,7 +83,6 @@ object BotManagerStorage {
     }
 
     fun updateManuelBotManager(id: String, manuelBotManager: ManuelBotManager) {
-        manuelBotManagers.remove(id)
         manuelBotDbHelper.removeBotById(id)
         manuelBotManagers[id] = manuelBotManager
         manuelBotDbHelper.insertBot(
@@ -104,7 +103,6 @@ object BotManagerStorage {
     }
 
     fun updateFollowBotManager(id: String, followBotManager: FollowBotManager) {
-        followBotManagers.remove(id)
         followBotDbHelper.removeBotById(id)
         followBotManagers[id] = followBotManager
         followBotDbHelper.insertBot(

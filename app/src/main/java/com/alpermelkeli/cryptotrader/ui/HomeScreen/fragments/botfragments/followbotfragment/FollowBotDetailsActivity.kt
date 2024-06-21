@@ -32,7 +32,7 @@ class FollowBotDetailsActivity : AppCompatActivity() {
             super.onCreate(savedInstanceState)
             binding = ActivityFollowBotDetailsBinding.inflate(layoutInflater)
 
-            val botManagerID = intent.getStringExtra("id")
+            val botManagerID = intent.getStringExtra("id")!!
 
             val pairName = intent.getStringExtra("pairName")!!
 

@@ -60,15 +60,15 @@ class ManuelBotManager(
         webSocketManager = null
     }
     override fun handlePriceUpdate(currentPrice: Double) {
-        //println("Bot id at botManager: $id")
+        println("Bot id at botManager: $id")
         val buyThreshold = thresholdManager.getBuyThreshold(pairName)
         val sellThreshold = thresholdManager.getSellThreshold(pairName)
 
-       /* println("Current price of $pairName = $currentPrice")
+        println("Current price of $pairName = $currentPrice")
         println("Buy threshold of $pairName = $buyThreshold")
         println("Sell threshold of $pairName = $sellThreshold")
         println("Open position of $pairName = $openPosition")
-        */
+
         if (!openPosition && buyThreshold != null && currentPrice > buyThreshold) {
 
             binanceAccountOperations.buyCoin(pairName, amount)

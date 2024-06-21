@@ -32,7 +32,7 @@ class ManuelBotDetailsActivity : AppCompatActivity() {
 
         binding = ActivityManuelBotDetailsBinding.inflate(layoutInflater)
 
-        val botManagerID = intent.getStringExtra("id")
+        val botManagerID = intent.getStringExtra("id")!!
 
         val pairName = intent.getStringExtra("pairName")!!
 

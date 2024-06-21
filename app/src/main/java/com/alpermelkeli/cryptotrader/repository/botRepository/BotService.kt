@@ -110,7 +110,9 @@ class BotService : Service() {
     private fun updateManuelBot(id: String, amount: Double, threshold: Double) {
         val botManager = manuelBotManagers[id]!!
         if(botManager.status=="Active"){
+            botManager.stop()
             botManager.update(amount, threshold)
+            botManager.start()
             Toast.makeText(application, "Bot updated.", Toast.LENGTH_LONG).show()
             Log.d("BotService", "Bot $id updated")
         }
@@ -127,7 +129,9 @@ class BotService : Service() {
     private fun updateFollowBot(id: String, amount: Double, threshold: Double, distanceInterval:Double, followInterval:Double){
         val botManager = followBotManagers[id]!!
         if(botManager.status=="Active"){
+            botManager.stop()
             botManager.update(amount, threshold, distanceInterval, followInterval)
+            botManager.start()
             Toast.makeText(application, "Bot updated.", Toast.LENGTH_LONG).show()
             Log.d("BotService", "Bot $id updated")
         }
