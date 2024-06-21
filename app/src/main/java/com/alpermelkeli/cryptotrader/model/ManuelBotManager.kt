@@ -60,15 +60,17 @@ class ManuelBotManager(
         webSocketManager = null
     }
     override fun handlePriceUpdate(currentPrice: Double) {
-        println("Bot id at botManager: $id")
+        //println("Bot id at botManager: $id")
         val buyThreshold = thresholdManager.getBuyThreshold(pairName)
         val sellThreshold = thresholdManager.getSellThreshold(pairName)
 
-        println("Current price of $pairName = $currentPrice")
+       /* println("Current price of $pairName = $currentPrice")
         println("Buy threshold of $pairName = $buyThreshold")
         println("Sell threshold of $pairName = $sellThreshold")
         println("Open position of $pairName = $openPosition")
+        */
         if (!openPosition && buyThreshold != null && currentPrice > buyThreshold) {
+
             binanceAccountOperations.buyCoin(pairName, amount)
                 .thenAccept { success: Boolean ->
                     if (success) {
@@ -76,7 +78,7 @@ class ManuelBotManager(
                         BotManagerStorage.updateManuelBotManager(id, this)
                         thresholdManager.setSellThreshold(pairName, buyThreshold)
                         thresholdManager.removeBuyThreshold(pairName)
-                        println("Buy order executed successfully.")
+                        //println("Buy order executed successfully.")
                         BotService.sendNotification("Buy Order $id", "Buy order for $pairName executed successfully.")
 
                     } else {
@@ -87,7 +89,7 @@ class ManuelBotManager(
                     }
                 }
                 .exceptionally { ex: Throwable ->
-                    println("An error occurred during buy operation: " + ex.message)
+                    //println("An error occurred during buy operation: " + ex.message)
                     BotService.sendNotification("Buy Order Error $id", "An error occurred during buy operation for $pairName: ${ex.message}")
                     ex.printStackTrace()
                     null
@@ -102,15 +104,15 @@ class ManuelBotManager(
                         BotManagerStorage.updateManuelBotManager(id, this)
                         thresholdManager.removeSellThreshold(pairName)
                         thresholdManager.setBuyThreshold(pairName, threshold)
-                        println("Sell order executed successfully.")
+                        //println("Sell order executed successfully.")
                         BotService.sendNotification("Sell Order $id", "Sell order for $pairName executed successfully.")
                     } else {
-                        println("Sell order failed. Please check the logs for more details.")
+                        //println("Sell order failed. Please check the logs for more details.")
                         BotService.sendNotification("Sell Order Failed $id", "Sell order for $pairName failed. Please check the logs for more details.")
                     }
                 }
                 .exceptionally { ex: Throwable ->
-                    println("An error occurred during sell operation: " + ex.message)
+                    //println("An error occurred during sell operation: " + ex.message)
                     BotService.sendNotification("Sell Order Error $id", "An error occurred during sell operation for $pairName: ${ex.message}")
                     ex.printStackTrace()
                     null

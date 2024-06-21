@@ -64,15 +64,15 @@ class FollowBotManager(
     }
 
     override fun handlePriceUpdate(currentPrice: Double) {
-        println("Bot id at botManager: $id")
+//        println("Bot id at botManager: $id")
         val buyThreshold = thresholdManager.getBuyThreshold(pairName)
         val sellThreshold = thresholdManager.getSellThreshold(pairName)
-
+        /*
         println("Current price of $pairName = $currentPrice")
         println("Buy threshold of $pairName = $buyThreshold")
         println("Sell threshold of $pairName = $sellThreshold")
         println("Open position of $pairName = $openPosition")
-
+        */
         if (currentPrice >= threshold + distanceInterval) {
 
             threshold += followInterval
@@ -84,7 +84,7 @@ class FollowBotManager(
             else{
                 thresholdManager.setBuyThreshold(pairName, threshold)
             }
-            println("Threshold updated to $threshold due to price increase")
+            BotService.sendNotification("Thresold Update","Threshold updated to $threshold due to price increase")
         }
         else if (currentPrice <= threshold - distanceInterval) {
             threshold -= followInterval
@@ -95,7 +95,7 @@ class FollowBotManager(
             else{
                 thresholdManager.setBuyThreshold(pairName,threshold)
             }
-            println("Threshold updated to $threshold due to price decrease")
+            BotService.sendNotification("Thresold update","Threshold updated to $threshold due to price decrease")
         }
 
         if (!openPosition && buyThreshold != null && currentPrice > buyThreshold) {
@@ -106,15 +106,15 @@ class FollowBotManager(
                         BotManagerStorage.updateFollowBotManager(id, this)
                         thresholdManager.setSellThreshold(pairName, buyThreshold)
                         thresholdManager.removeBuyThreshold(pairName)
-                        println("Buy order executed successfully.")
+                        //println("Buy order executed successfully.")
                         BotService.sendNotification("Buy $id", "Buy order for $pairName executed successfully.")
                     } else {
-                        println("Buy order failed. Please check the logs for more details.")
+                        //  println("Buy order failed. Please check the logs for more details.")
                         BotService.sendNotification("Buy Failed $id", "Buy order for $pairName failed. Please check the logs for more details.")
                     }
                 }
                 .exceptionally { ex: Throwable ->
-                    println("An error occurred during buy operation: " + ex.message)
+                    //       println("An error occurred during buy operation: " + ex.message)
                     BotService.sendNotification("Buy Error $id", "An error occurred during buy operation for $pairName: ${ex.message}")
                     ex.printStackTrace()
                     null
@@ -129,15 +129,15 @@ class FollowBotManager(
                         BotManagerStorage.updateFollowBotManager(id, this)
                         thresholdManager.removeSellThreshold(pairName)
                         thresholdManager.setBuyThreshold(pairName, threshold)
-                        println("Sell order executed successfully.")
+                        //             println("Sell order executed successfully.")
                         BotService.sendNotification("Sell $id", "Sell order for $pairName executed successfully.")
                     } else {
-                        println("Sell order failed. Please check the logs for more details.")
+                        //              println("Sell order failed. Please check the logs for more details.")
                         BotService.sendNotification("Sell Failed $id", "Sell order for $pairName failed. Please check the logs for more details.")
                     }
                 }
                 .exceptionally { ex: Throwable ->
-                    println("An error occurred during sell operation: " + ex.message)
+                    //           println("An error occurred during sell operation: " + ex.message)
                     BotService.sendNotification("Sell Error $id", "An error occurred during sell operation for $pairName: ${ex.message}")
                     ex.printStackTrace()
                     null

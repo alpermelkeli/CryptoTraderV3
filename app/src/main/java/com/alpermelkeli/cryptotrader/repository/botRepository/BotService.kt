@@ -25,7 +25,7 @@ import kotlinx.coroutines.*
  * BotManagerStorage(RAM) that has BotManager objects that has management features inside.
  */
 class BotService : Service() {
-    private lateinit var manuelBotManagers : MutableMap<String,ManuelBotManager>
+    private lateinit var manuelBotManagers : MutableMap<String, ManuelBotManager>
     private lateinit var followBotManagers : MutableMap<String, FollowBotManager>
     override fun onCreate() {
         super.onCreate()
@@ -39,11 +39,11 @@ class BotService : Service() {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                startForeground(1, createNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
-            } else {
-                startForeground(1, createNotification())
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(1, createNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+        } else {
+            startForeground(1, createNotification())
+        }
 
         return START_NOT_STICKY
     }
@@ -95,7 +95,7 @@ class BotService : Service() {
         botManager.status = "Active"
         BotManagerStorage.updateManuelBotManager(id, botManager)
         Toast.makeText(applicationContext, "Bot started.", Toast.LENGTH_LONG).show()
-            Log.d("BotService", "Bot $id started")
+        Log.d("BotService", "Bot $id started")
         manuelBotManagers[id] = botManager
     }
     private fun startFollowBot(id: String) {
