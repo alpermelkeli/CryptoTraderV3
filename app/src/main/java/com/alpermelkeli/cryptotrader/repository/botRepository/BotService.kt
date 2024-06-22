@@ -1,5 +1,6 @@
 package com.alpermelkeli.cryptotrader.repository.botRepository
 
+import android.app.ActivityManager
 import android.app.AlarmManager
 import android.app.Notification
 import android.app.NotificationChannel
@@ -17,12 +18,17 @@ import android.os.SystemClock
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.alpermelkeli.cryptotrader.R
 import com.alpermelkeli.cryptotrader.model.FollowBotManager
 import com.alpermelkeli.cryptotrader.model.ManuelBotManager
 import com.alpermelkeli.cryptotrader.repository.botRepository.ram.BotManagerStorage
 import com.alpermelkeli.cryptotrader.ui.HomeScreen.HomeScreen
 import kotlinx.coroutines.*
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -32,6 +38,19 @@ import kotlinx.coroutines.*
 class BotService : Service() {
     private lateinit var manuelBotManagers : MutableMap<String, ManuelBotManager>
     private lateinit var followBotManagers : MutableMap<String, FollowBotManager>
+    private val RESTART_INTERVAL_MS = 30 * 60 * 1000L // 30 minute
+
+    private val restartHandler = Handler(Looper.getMainLooper())
+
+    private val restartRunnable = object : Runnable {
+        override fun run() {
+            restartAllBots()
+            restartHandler.postDelayed(
+                this,
+                RESTART_INTERVAL_MS
+            )
+        }
+    }
     override fun onCreate() {
         super.onCreate()
         BotManagerStorage.initialize(applicationContext)
@@ -39,10 +58,9 @@ class BotService : Service() {
         followBotManagers = BotManagerStorage.getFollowBotManagers()
         createNotificationChannel()
         instance = this
-        Log.d("BotService", "Service created")
-        Handler(Looper.getMainLooper()).postDelayed({
-            restartAllBots()
-        }, 5000)
+        restartAllBots()
+        restartHandler.postDelayed(restartRunnable, RESTART_INTERVAL_MS)
+
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -52,7 +70,6 @@ class BotService : Service() {
         } else {
             startForeground(1, createNotification())
         }
-
         return START_NOT_STICKY
     }
     override fun onBind(intent: Intent): IBinder? = null
@@ -93,11 +110,7 @@ class BotService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         Log.d("BotService", "Service Destroyed")
-        val restartServiceIntent = Intent(applicationContext, RestartServiceReceiver::class.java)
-        restartServiceIntent.action = "com.alpermelkeli.cryptotrader.RESTART_SERVICE"
-        val pendingIntent = PendingIntent.getBroadcast(this, 1, restartServiceIntent, PendingIntent.FLAG_IMMUTABLE)
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 1000, pendingIntent)
+        sendNotificationInternal("Servis durduruldu", "Servis Durduruldu.")
     }
 
     /*
