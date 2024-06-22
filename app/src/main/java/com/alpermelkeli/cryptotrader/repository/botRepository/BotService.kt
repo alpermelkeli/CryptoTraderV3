@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit
 class BotService : Service() {
     private lateinit var manuelBotManagers : MutableMap<String, ManuelBotManager>
     private lateinit var followBotManagers : MutableMap<String, FollowBotManager>
-    private val RESTART_INTERVAL_MS = 30 * 60 * 1000L // 30 minute
+    private val RESTART_INTERVAL_MS = 1 * 10 * 1000L // 30 minute
 
     private val restartHandler = Handler(Looper.getMainLooper())
 
@@ -118,6 +118,7 @@ class BotService : Service() {
      */
     private fun startManuelBot(id: String) {
         manuelBotManagers[id]?.let { botManager ->
+            botManager.stop()
             botManager.start()
             Log.d("BotService", "Bot $id started by WorkManager")
             manuelBotManagers[id] = botManager
@@ -126,6 +127,7 @@ class BotService : Service() {
 
     private fun startFollowBot(id: String) {
         followBotManagers[id]?.let { botManager ->
+            botManager.stop()
             botManager.start()
             Log.d("BotService", "Bot $id started by WorkManager")
             followBotManagers[id] = botManager
