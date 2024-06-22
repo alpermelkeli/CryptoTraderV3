@@ -1,14 +1,19 @@
 package com.alpermelkeli.cryptotrader.repository.botRepository
 
+import android.app.AlarmManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
+import android.os.SystemClock
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
@@ -35,6 +40,9 @@ class BotService : Service() {
         createNotificationChannel()
         instance = this
         Log.d("BotService", "Service created")
+        Handler(Looper.getMainLooper()).postDelayed({
+            restartAllBots()
+        }, 5000)
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -84,28 +92,31 @@ class BotService : Service() {
     }
     override fun onDestroy() {
         super.onDestroy()
-        println("Service destroyed.")
+        Log.d("BotService", "Service Destroyed")
+        val restartServiceIntent = Intent(applicationContext, RestartServiceReceiver::class.java)
+        restartServiceIntent.action = "com.alpermelkeli.cryptotrader.RESTART_SERVICE"
+        val pendingIntent = PendingIntent.getBroadcast(this, 1, restartServiceIntent, PendingIntent.FLAG_IMMUTABLE)
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 1000, pendingIntent)
     }
+
     /*
     This function doesn't use because update function can control this.
      */
     private fun startManuelBot(id: String) {
-        val botManager = manuelBotManagers[id]!!
-        botManager.start()
-        botManager.status = "Active"
-        BotManagerStorage.updateManuelBotManager(id, botManager)
-        Toast.makeText(applicationContext, "Bot started.", Toast.LENGTH_LONG).show()
-        Log.d("BotService", "Bot $id started")
-        manuelBotManagers[id] = botManager
+        manuelBotManagers[id]?.let { botManager ->
+            botManager.start()
+            Log.d("BotService", "Bot $id started by WorkManager")
+            manuelBotManagers[id] = botManager
+        }
     }
+
     private fun startFollowBot(id: String) {
-        val botManager =  followBotManagers[id]!!
-        botManager.start()
-        botManager.status = "Active"
-        BotManagerStorage.updateFollowBotManager(id,botManager)
-        Toast.makeText(applicationContext, "Bot started.", Toast.LENGTH_LONG).show()
-        Log.d("BotService", "Bot $id started")
-        followBotManagers[id] = botManager
+        followBotManagers[id]?.let { botManager ->
+            botManager.start()
+            Log.d("BotService", "Bot $id started by WorkManager")
+            followBotManagers[id] = botManager
+        }
     }
     private fun updateManuelBot(id: String, amount: Double, threshold: Double) {
         val botManager = manuelBotManagers[id]!!
@@ -201,7 +212,6 @@ class BotService : Service() {
             }
         }
     }
-
     /**
      * It's like bot viewmodel you can use this functions without create instance of this class.
      */
@@ -215,6 +225,17 @@ class BotService : Service() {
         fun stopService() {
             instance.stopAllManuelBots()
             instance.stopAllFollowBots()
+            instance.stopSelf()
+        }
+        fun restartAllBots() {
+            for((id,Bot) in instance.manuelBotManagers){
+                Log.d("BotService", Bot.status)
+                if(Bot.status=="Active") instance.startManuelBot(id)
+            }
+            for((id,Bot) in instance.followBotManagers){
+                if(Bot.status=="Active") instance.startFollowBot(id)
+            }
+            Log.d("BotService", "All bots restarted")
         }
         fun startManuelBot(botId: String){
             instance.startManuelBot(botId)
