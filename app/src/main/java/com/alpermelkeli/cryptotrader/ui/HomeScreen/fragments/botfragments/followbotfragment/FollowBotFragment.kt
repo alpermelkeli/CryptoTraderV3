@@ -25,6 +25,7 @@ import com.alpermelkeli.cryptotrader.model.FollowBotManager
 import com.alpermelkeli.cryptotrader.repository.apiRepository.ApiStorage
 import com.alpermelkeli.cryptotrader.repository.botRepository.ram.BotManagerStorage
 import com.google.android.material.materialswitch.MaterialSwitch
+import kotlinx.coroutines.delay
 
 class FollowBotFragment : Fragment() {
     private lateinit var binding: FragmentFollowBotBinding
@@ -183,5 +184,13 @@ class FollowBotFragment : Fragment() {
         BotManagerStorage.initialize(requireContext())
         setupRecyclerView()
         setupButtonListeners()
+        removeProgressBar()
+    }
+    private fun removeProgressBar(){
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(620)
+            binding.followBotFragmentProgressBar.visibility = View.GONE
+            binding.followBotLayout.visibility = View.VISIBLE
+        }
     }
 }

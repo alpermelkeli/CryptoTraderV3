@@ -25,6 +25,7 @@ import com.alpermelkeli.cryptotrader.databinding.FragmentManuelBotBinding
 import com.alpermelkeli.cryptotrader.repository.apiRepository.ApiStorage
 import com.alpermelkeli.cryptotrader.repository.botRepository.ram.BotManagerStorage
 import com.google.android.material.materialswitch.MaterialSwitch
+import kotlinx.coroutines.delay
 
 class ManuelBotFragment : Fragment() {
     private lateinit var binding: FragmentManuelBotBinding
@@ -183,5 +184,13 @@ class ManuelBotFragment : Fragment() {
         BotManagerStorage.initialize(requireContext())
         setupRecyclerView()
         setupButtonListeners()
+        removeProgressBar()
+    }
+    private fun removeProgressBar(){
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(620)
+            binding.manuelBotFragmentProgressBar.visibility = View.GONE
+            binding.manuelBotLayout.visibility = View.VISIBLE
+        }
     }
 }

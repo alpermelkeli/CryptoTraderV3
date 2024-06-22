@@ -7,12 +7,19 @@
     tools:context=".ui.HomeScreen.fragments.botfragments.manuelbotfragment.ManuelBotFragment"
     android:background="@color/fragment_background_color"
     >
-
+    <ProgressBar
+        android:id="@+id/manuelBotFragmentProgressBar"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center"
+        />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/manuelBotLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bots_background"
+        android:visibility="gone"
         >
 
         <TextView

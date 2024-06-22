@@ -7,10 +7,17 @@
     tools:context=".ui.HomeScreen.fragments.botfragments.followbotfragment.FollowBotFragment"
     android:background="@color/fragment_background_color"
     >
-
+    <ProgressBar
+        android:id="@+id/followBotFragmentProgressBar"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center"
+        />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/followBotLayout"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="match_parent"
         android:background="@drawable/bots_background"
         >
