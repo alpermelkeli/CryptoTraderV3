@@ -29,7 +29,7 @@ class TradingBotsAdapter(
         if(bot.status=="Passive") holder.activeText.setTextColor(Color.RED) else holder.activeText.setTextColor(Color.GREEN)
         holder.activeText.text = bot.status
         holder.botPositionText.text = bot.position
-        if(bot.position=="Açık") holder.botPositionText.setTextColor(Color.GREEN) else holder.botPositionText.setTextColor(Color.RED)
+        if(bot.position=="Buy") holder.botPositionText.setTextColor(Color.GREEN) else holder.botPositionText.setTextColor(Color.RED)
         val coinImageUrl = getCoinImageUrl(bot.firstPairName)
         loadCoinImage(coinImageUrl, holder)
     }

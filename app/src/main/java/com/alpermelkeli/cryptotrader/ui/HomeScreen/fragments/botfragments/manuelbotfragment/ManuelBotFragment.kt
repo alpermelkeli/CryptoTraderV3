@@ -67,7 +67,7 @@ class ManuelBotFragment : Fragment() {
         tradingBots = mutableListOf()
 
         for((id,botManager) in BotManagerStorage.getManuelBotManagers()){
-            tradingBots.add(TradingBot(id, R.drawable.btc_vector, botManager.exchangeMarket, botManager.status, botManager.firstPairName, botManager.secondPairName, botManager.pairName,if(botManager.openPosition) "Açık" else "Kapalı"))
+            tradingBots.add(TradingBot(id, R.drawable.btc_vector, botManager.exchangeMarket, botManager.status, botManager.firstPairName, botManager.secondPairName, botManager.pairName,if(botManager.openPosition) "Sell" else "Buy"))
         }
 
         adapter = TradingBotsAdapter(tradingBots,
@@ -142,7 +142,7 @@ class ManuelBotFragment : Fragment() {
             if (pairName.isNotEmpty() && exchangeMarket.isNotEmpty()) {
                 val id = generateBotId()
 
-                val newBot = TradingBot(id, R.drawable.btc_vector, exchangeMarket, "Passive", firstPairName, secondPairName, pairName, if(buySellSwitch.isChecked) "Açık" else "Kapalı")
+                val newBot = TradingBot(id, R.drawable.btc_vector, exchangeMarket, "Passive", firstPairName, secondPairName, pairName, if(buySellSwitch.isChecked) "Sell" else "Buy")
 
                 tradingBots.add(newBot)
 
