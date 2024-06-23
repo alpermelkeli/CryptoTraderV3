@@ -1,10 +1,12 @@
 package com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.homefragment
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.alpermelkeli.cryptotrader.R
@@ -42,10 +44,22 @@ class HomeFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             val balance = binanceAccountOperations.accountBalance
             withContext(Dispatchers.Main) {
-                binding.accountBalanceUsdtText.text = "%.2f USDT".format(balance)
+                updateAccountBalanceAnimated(balance)
             }
         }
     }
+    private fun updateAccountBalanceAnimated(newBalance: Double) {
+        val currentBalance = 0.0
+        val animator = ValueAnimator.ofFloat(currentBalance.toFloat(), newBalance.toFloat())
+        animator.duration = 500
+        animator.interpolator = AccelerateDecelerateInterpolator()
+        animator.addUpdateListener { animation ->
+            val animatedValue = animation.animatedValue as Float
+            binding.accountBalanceUsdtText.text = "%.2f USDT".format(animatedValue)
+        }
+        animator.start()
+    }
+
     private fun initializeAccountOperations() {
         CoroutineScope(Dispatchers.IO).launch {
             ApiStorage.initialize(requireContext())
@@ -62,17 +76,12 @@ class HomeFragment : Fragment() {
         updateAccountBalance()
     }
     private fun setUpUserUI(){
-        userViewModel.userDocument.observe(viewLifecycleOwner, Observer { document ->
-            if (document != null) {
-                binding.nameText.text =
-                    document.get("email").toString().split("@")[0]
-            }
-            else {
-
-            }
-        })
-        userViewModel.fetchUserDocument()
+        userViewModel.user.observe(viewLifecycleOwner) { user ->
+            binding.nameText.text = user?.email.toString().split("@")[0]
+        }
+        userViewModel.getCurrentUser()
     }
+
 
 
 }

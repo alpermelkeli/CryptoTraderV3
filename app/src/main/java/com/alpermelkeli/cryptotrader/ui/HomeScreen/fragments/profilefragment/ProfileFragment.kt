@@ -1,10 +1,12 @@
 package com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.profilefragment
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.NavOptions
@@ -68,11 +70,22 @@ class ProfileFragment : Fragment() {
             }
         }
     }
+    private fun updateAccountBalanceAnimated(newBalance: Double) {
+        val currentBalance = 0.0
+        val animator = ValueAnimator.ofFloat(currentBalance.toFloat(), newBalance.toFloat())
+        animator.duration = 500
+        animator.interpolator = AccelerateDecelerateInterpolator()
+        animator.addUpdateListener { animation ->
+            val animatedValue = animation.animatedValue as Float
+            binding.profileBalanceText.text = "%.2f USDT".format(animatedValue)
+        }
+        animator.start()
+    }
     private fun updateAccountBalance() {
         CoroutineScope(Dispatchers.IO).launch {
             val balance = binanceAccountOperations.accountBalance
             withContext(Dispatchers.Main) {
-                binding.profileBalanceText.text = "%.2f USDT".format(balance)
+                updateAccountBalanceAnimated(balance)
             }
         }
     }
@@ -80,6 +93,12 @@ class ProfileFragment : Fragment() {
         updateAccountBalance()
     }
     private fun setUpUserUI(){
+
+        userViewModel.user.observe(viewLifecycleOwner) { user ->
+            binding.profileIDText.text = user?.email.toString()
+        }
+        userViewModel.getCurrentUser()
+        /*
         userViewModel.userDocument.observe(viewLifecycleOwner, Observer { document ->
             if (document != null) {
                 binding.profileIDText.text = document.get("email").toString()
@@ -89,5 +108,6 @@ class ProfileFragment : Fragment() {
             }
         })
         userViewModel.fetchUserDocument()
+         */
     }
 }

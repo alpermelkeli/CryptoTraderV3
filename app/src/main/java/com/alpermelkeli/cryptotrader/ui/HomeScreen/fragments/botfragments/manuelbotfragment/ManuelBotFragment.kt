@@ -1,5 +1,6 @@
 package com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.botfragments.manuelbotfragment
 
+import android.animation.ObjectAnimator
 import com.alpermelkeli.cryptotrader.model.ManuelBotManager
 import android.app.AlertDialog
 import android.content.Intent
@@ -7,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
 import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,8 +44,17 @@ class ManuelBotFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentManuelBotBinding.inflate(layoutInflater)
+        setProgressBarAnimation()
         initializeAccountOperations()
         return binding.root
+    }
+
+    private fun setProgressBarAnimation(){
+        val animator = ObjectAnimator.ofFloat(binding.manuelBotFragmentProgressBar, "rotation", 0f, 360f)
+        animator.duration = 630
+        animator.repeatCount = ObjectAnimator.INFINITE
+        animator.interpolator = LinearInterpolator()
+        animator.start()
     }
 
     override fun onResume() {

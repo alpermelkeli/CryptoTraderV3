@@ -4,6 +4,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FF0000</color>
     <color name="green">#00FF00</color>
-    <color name="fragment_background_color">#1C1718</color>
+    <color name="primary_color">#1C1718</color>
     <color name="second_color">#F8A75A</color>
+    <color name="progress_color">#4CAF50</color>
+    <color name="inner_circle_color">#FFFFFF</color>
 </resources>

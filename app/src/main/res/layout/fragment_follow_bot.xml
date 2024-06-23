@@ -5,13 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.HomeScreen.fragments.botfragments.followbotfragment.FollowBotFragment"
-    android:background="@color/fragment_background_color"
+    android:background="@color/primary_color"
     >
     <ProgressBar
         android:id="@+id/followBotFragmentProgressBar"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_gravity="center"
+        android:indeterminateDrawable="@drawable/custom_progress_bar"
+        android:indeterminate="true"
         />
 
     <androidx.constraintlayout.widget.ConstraintLayout

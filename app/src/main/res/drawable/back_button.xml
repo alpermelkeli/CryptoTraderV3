@@ -5,7 +5,7 @@
     android:viewportHeight="64">
     <group>
         <path
-            android:fillColor="@color/fragment_background_color"
+            android:fillColor="@color/primary_color"
             android:pathData="M32 8A22 22 0 1 0 32 52 22 22 0 1 0 32 8z"/>
     </group>
     <path
