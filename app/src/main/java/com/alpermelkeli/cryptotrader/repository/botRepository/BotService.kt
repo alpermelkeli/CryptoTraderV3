@@ -1,35 +1,26 @@
 package com.alpermelkeli.cryptotrader.repository.botRepository
 
-import android.app.ActivityManager
-import android.app.AlarmManager
+
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import android.os.SystemClock
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
 import com.alpermelkeli.cryptotrader.R
 import com.alpermelkeli.cryptotrader.model.FollowBotManager
 import com.alpermelkeli.cryptotrader.model.ManuelBotManager
 import com.alpermelkeli.cryptotrader.repository.botRepository.ram.BotManagerStorage
 import com.alpermelkeli.cryptotrader.ui.HomeScreen.HomeScreen
 import kotlinx.coroutines.*
-import java.util.concurrent.TimeUnit
-
 
 /**
  * This class provides foreground service for the android app. It is manage bots by fetching data with using
@@ -113,9 +104,7 @@ class BotService : Service() {
         sendNotificationInternal("Servis durduruldu", "Servis Durduruldu.")
     }
 
-    /*
-    This function doesn't use because update function can control this.
-     */
+
     private fun startManuelBot(id: String) {
         manuelBotManagers[id]?.let { botManager ->
             botManager.stop()
@@ -252,12 +241,6 @@ class BotService : Service() {
                 if(Bot.status=="Active") instance.startFollowBot(id)
             }
             Log.d("BotService", "All bots restarted")
-        }
-        fun startManuelBot(botId: String){
-            instance.startManuelBot(botId)
-        }
-        fun startFollowBot(botId: String){
-            instance.startFollowBot(botId)
         }
         fun updateManuelBot(botId: String, amount: Double, threshold: Double){
             instance.updateManuelBot(botId,amount,threshold)
