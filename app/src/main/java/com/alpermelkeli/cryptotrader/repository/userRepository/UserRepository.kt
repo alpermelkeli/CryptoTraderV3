@@ -17,7 +17,7 @@ class UserRepository(private val context: Context) {
             if (task.isSuccessful) {
                 val firebaseUser: FirebaseUser? = auth.currentUser
                 firebaseUser?.let { user ->
-                    val userModel = User(email, "", accountType, name, surname, phoneNumber)
+                    val userModel = User(email, accountType, name, surname, phoneNumber)
                     firestore.collection("users").document(user.uid)
                         .set(userModel)
                         .addOnSuccessListener {
@@ -73,7 +73,7 @@ class UserRepository(private val context: Context) {
 
     fun isLoggedIn(): Boolean {
         val currentUser = auth.currentUser
-        return currentUser != null
+        return currentUser != null && currentUser.isEmailVerified
     }
 
     fun getUserDocument(callback: (Boolean, String?, Map<String, Any>?) -> Unit) {

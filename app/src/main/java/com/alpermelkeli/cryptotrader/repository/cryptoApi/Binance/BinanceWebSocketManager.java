@@ -1,7 +1,15 @@
 package com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance;
 
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import com.alpermelkeli.cryptotrader.repository.botRepository.BotService;
 import com.alpermelkeli.cryptotrader.repository.cryptoApi.WebSocketManager;
 import org.json.JSONObject;
+
+import okhttp3.Response;
+import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 
 /**
@@ -59,6 +67,19 @@ public class BinanceWebSocketManager extends WebSocketManager {
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
+        }
+
+        @Override
+        public void onClosed(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
+            super.onClosed(webSocket, code, reason);
+            Log.d("WebSocket", "Websocket closed");
+        }
+
+        @Override
+        public void onFailure(WebSocket webSocket, Throwable t, Response response) {
+            super.onFailure(webSocket, t, response);
+            Log.d("WebSocket", "Websocket failure");
+            BotService.Companion.sendNotification("Bağlantı koptu! ", "Botun bağlantısı koptu. İnternete bağlanıp uygulamayı tekrar çalıştırın veya 20 dakika içinde tekrar bağlantı denenecek.");
         }
 
         /**

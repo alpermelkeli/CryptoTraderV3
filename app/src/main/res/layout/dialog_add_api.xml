@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/configure_bot_component_background"
+    android:background="@drawable/dialog_background"
     android:padding="20dp"
     android:layout_margin="10dp"
     >

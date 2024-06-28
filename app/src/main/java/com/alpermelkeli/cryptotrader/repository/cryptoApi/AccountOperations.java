@@ -11,4 +11,6 @@ public interface AccountOperations {
     double getAccountBalance();
     double getSelectedCoinQuantity(String asset);
     CompletableFuture<List<Trade>> getTradeHistorySelectedCoin(String pairName);
+    CompletableFuture<Boolean> openLongToCoin(String symbol, double quantity, int leverage);
+    CompletableFuture<Boolean> openShortToCoin(String symbol, double quantity, int leverage);
 }

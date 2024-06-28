@@ -4,28 +4,28 @@
     android:viewportWidth="35"
     android:viewportHeight="35">
     <path
-        android:strokeColor="#FF000000"
+        android:strokeColor="@color/white"
         android:strokeWidth="2.5"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
         android:strokeMiterLimit="10"
         android:pathData="M2.92 12.4h29.16"/>
     <path
-        android:strokeColor="#FF000000"
+        android:strokeColor="@color/white"
         android:strokeWidth="2.5"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
         android:strokeMiterLimit="10"
         android:pathData="M8.75 24.07h2.92"/>
     <path
-        android:strokeColor="#FF000000"
+        android:strokeColor="@color/white"
         android:strokeWidth="2.5"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
         android:strokeMiterLimit="10"
         android:pathData="M15.31 24.07h5.84"/>
     <path
-        android:strokeColor="#FF000000"
+        android:strokeColor="@color/white"
         android:strokeWidth="2.5"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"

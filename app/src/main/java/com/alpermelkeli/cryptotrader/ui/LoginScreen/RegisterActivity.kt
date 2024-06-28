@@ -48,13 +48,13 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun register() {
-        var email =  binding.emailEditText.text.toString()
-        var password = binding.passwordEditText.text.toString()
-        var passwordConfirm = binding.passwordConfirmEditText.text.toString()
-        var accountType = "Trade"
-        var name = binding.nameEditText.text.toString()
-        var surname = binding.surnameEditText.text.toString()
-        var phoneNumber = binding.phoneNumberEditText.text.toString()
+        val email =  binding.emailEditText.text.toString()
+        val password = binding.passwordEditText.text.toString()
+        val passwordConfirm = binding.passwordConfirmEditText.text.toString()
+        val accountType = "Trade"
+        val name = binding.nameEditText.text.toString()
+        val surname = binding.surnameEditText.text.toString()
+        val phoneNumber = binding.phoneNumberEditText.text.toString()
 
         if(email.isNotEmpty() && password.isNotEmpty() && name.isNotEmpty() && surname.isNotEmpty() && phoneNumber.isNotEmpty()){
 

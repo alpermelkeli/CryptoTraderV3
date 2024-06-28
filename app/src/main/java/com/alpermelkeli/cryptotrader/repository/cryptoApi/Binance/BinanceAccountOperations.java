@@ -146,8 +146,6 @@ public class BinanceAccountOperations implements AccountOperations{
             return 0.0;
         }
     }
-
-
     @Override
     public double getSelectedCoinQuantity(String asset) {
         try {
@@ -286,8 +284,6 @@ public class BinanceAccountOperations implements AccountOperations{
 
         return future;
     }
-
-
     @Override
     public CompletableFuture<Boolean> sellCoin(String symbol, double quantity) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
@@ -334,13 +330,19 @@ public class BinanceAccountOperations implements AccountOperations{
 
         return future;
     }
-
-
     private String convertMillisToDate(long millis) {
         Date date = new Date(millis);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         return sdf.format(date);
+    }
+    @Override
+    public CompletableFuture<Boolean> openLongToCoin(String symbol, double quantity, int leverage) {
+        return null;
+    }
+    @Override
+    public CompletableFuture<Boolean> openShortToCoin(String symbol, double quantity, int leverage) {
+        return null;
     }
 }
 

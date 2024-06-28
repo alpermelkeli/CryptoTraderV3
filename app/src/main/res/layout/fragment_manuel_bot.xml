@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.HomeScreen.fragments.botfragments.manuelbotfragment.ManuelBotFragment"
-    android:background="@color/primary_color"
+    android:background="@color/black"
     >
     <ProgressBar
         android:id="@+id/manuelBotFragmentProgressBar"
@@ -24,13 +24,13 @@
         android:visibility="gone"
         >
 
-        <TextView
+        <ImageView
             android:id="@+id/textView2"
             android:fontFamily="@font/lato_bold"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="20dp"
-            android:text="Manuel Bot"
+            android:src="@drawable/manuel_robot_text"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="25sp"

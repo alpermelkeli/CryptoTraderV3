@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary_color"
+    android:background="@color/black"
     tools:context=".ui.HomeScreen.HomeScreen">
 
     <androidx.fragment.app.FragmentContainerView
@@ -22,10 +22,11 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="0dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="13dp"
         android:layout_marginStart="10dp"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/bottom_nav_bar_background"
+        android:padding="3dp"
+        android:background="@drawable/configure_bot_component_background"
         app:itemTextColor="@color/white"
         app:itemActiveIndicatorStyle="@color/black"
         app:itemIconTint="@color/white"

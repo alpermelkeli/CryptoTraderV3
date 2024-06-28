@@ -6,7 +6,7 @@
     android:layout_margin="15dp"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@drawable/configure_bot_component_background">
+    android:background="@drawable/dialog_background">
 
     <EditText
         android:id="@+id/firstPairEditText"

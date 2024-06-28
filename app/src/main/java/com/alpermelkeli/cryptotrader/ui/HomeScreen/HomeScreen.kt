@@ -28,7 +28,6 @@ class HomeScreen : AppCompatActivity() {
     private lateinit var binding: ActivityHomeScreenBinding
     private val REQUEST_FOREGROUND_PERMISSION = 1
     private val REQUEST_DATA_SYNC_PERMISSION = 2
-    private val REQUEST_IGNORE_BATTERY_OPTIMIZATIONS = 3
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.setFlags(

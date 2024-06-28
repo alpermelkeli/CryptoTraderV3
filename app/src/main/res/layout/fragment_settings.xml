@@ -42,7 +42,7 @@
                 android:id="@+id/stopServiceButton"
                 android:layout_width="match_parent"
                 android:textAllCaps="false"
-                android:background="@drawable/orange_line_rectangle_background"
+                android:background="@drawable/configure_bot_component_background"
                 android:layout_height="60dp"
                 android:textSize="18sp"
                 android:layout_marginTop="15dp"
@@ -53,7 +53,7 @@
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/signOutButton"
                 android:layout_width="match_parent"
-                android:background="@drawable/orange_line_rectangle_background"
+                android:background="@drawable/configure_bot_component_background"
                 android:layout_height="60dp"
                 android:textSize="18sp"
                 android:textAllCaps="false"
