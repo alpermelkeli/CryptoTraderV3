@@ -1,4 +1,4 @@
-package com.alpermelkeli.cryptotrader.model;
+package com.alpermelkeli.cryptotrader.model.bot;
 
 import java.util.HashMap;
 import java.util.Map;

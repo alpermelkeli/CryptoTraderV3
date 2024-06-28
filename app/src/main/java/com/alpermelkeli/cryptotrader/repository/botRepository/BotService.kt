@@ -16,8 +16,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.alpermelkeli.cryptotrader.R
-import com.alpermelkeli.cryptotrader.model.FollowBotManager
-import com.alpermelkeli.cryptotrader.model.ManuelBotManager
+import com.alpermelkeli.cryptotrader.model.bot.FollowBotManager
+import com.alpermelkeli.cryptotrader.model.bot.ManuelBotManager
 import com.alpermelkeli.cryptotrader.repository.botRepository.ram.BotManagerStorage
 import com.alpermelkeli.cryptotrader.ui.HomeScreen.HomeScreen
 import kotlinx.coroutines.*

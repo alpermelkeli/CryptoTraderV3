@@ -4,10 +4,11 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.alpermelkeli.cryptotrader.model.view.Trade;
+import com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance.TradeResult;
 
 public interface AccountOperations {
-    CompletableFuture<Boolean> buyCoin(String symbol, double quantity);
-    CompletableFuture<Boolean> sellCoin(String symbol, double quantity);
+    CompletableFuture<TradeResult> buyCoin(String symbol, double quantity);
+    CompletableFuture<TradeResult> sellCoin(String symbol, double quantity);
     double getAccountBalance();
     double getSelectedCoinQuantity(String asset);
     CompletableFuture<List<Trade>> getTradeHistorySelectedCoin(String pairName);

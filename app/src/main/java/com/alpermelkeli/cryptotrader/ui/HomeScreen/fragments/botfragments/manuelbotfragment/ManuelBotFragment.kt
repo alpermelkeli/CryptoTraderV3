@@ -1,7 +1,7 @@
 package com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.botfragments.manuelbotfragment
 
 import android.animation.ObjectAnimator
-import com.alpermelkeli.cryptotrader.model.ManuelBotManager
+import com.alpermelkeli.cryptotrader.model.bot.ManuelBotManager
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle

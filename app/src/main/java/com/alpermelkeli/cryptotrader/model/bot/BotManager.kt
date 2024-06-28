@@ -1,4 +1,4 @@
-package com.alpermelkeli.cryptotrader.model
+package com.alpermelkeli.cryptotrader.model.bot
 
 abstract class BotManager(
     val id: String,

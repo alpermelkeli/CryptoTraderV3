@@ -239,9 +239,8 @@ public class BinanceAccountOperations implements AccountOperations{
         });
     }
     @Override
-    public CompletableFuture<Boolean> buyCoin(String symbol, double quantity) {
-        CompletableFuture<Boolean> future = new CompletableFuture<>();
-
+    public CompletableFuture<TradeResult> buyCoin(String symbol, double quantity) {
+        CompletableFuture<TradeResult> future = new CompletableFuture<>();
         try {
             String endpoint = "/v3/order";
             String url = BASE_URL + endpoint;
@@ -263,30 +262,48 @@ public class BinanceAccountOperations implements AccountOperations{
                 @Override
                 public void onFailure(Call call, IOException e) {
                     e.printStackTrace();
-                    future.complete(false);
+                    future.complete(new TradeResult(false, 0.0));
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    if (response.isSuccessful()) {
-                        System.out.println("Buy order placed successfully");
-                        future.complete(true);
-                    } else {
-                        System.out.println("Failed to place buy order: " + response.code() + " | " + response.message() + " | " + response.body().string());
-                        future.complete(false);
+                    try{
+                        if (response.isSuccessful()) {
+                            String responseBody = response.body().string();
+                            JSONObject json = new JSONObject(responseBody);
+                            JSONArray fills = json.getJSONArray("fills");
+                            double totalCommission = 0.0;
+
+                            for (int i = 0; i < fills.length(); i++) {
+                                JSONObject fill = fills.getJSONObject(i);
+                                double commission = fill.getDouble("commission");
+                                totalCommission += commission;
+                            }
+
+                            System.out.println("Buy order placed successfully");
+                            future.complete(new TradeResult(true, totalCommission));
+                        } else {
+                            System.out.println("Failed to place buy order: " + response.code() + " | " + response.message() + " | " + response.body().string());
+                            future.complete(new TradeResult(false, 0.0));
+                        }
                     }
+                    catch (Exception e){
+                        System.out.printf(e.getMessage());
+                    }
+
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
-            future.complete(false);
+            future.complete(new TradeResult(false, 0.0));
         }
 
         return future;
     }
+
     @Override
-    public CompletableFuture<Boolean> sellCoin(String symbol, double quantity) {
-        CompletableFuture<Boolean> future = new CompletableFuture<>();
+    public CompletableFuture<TradeResult> sellCoin(String symbol, double quantity) {
+        CompletableFuture<TradeResult> future = new CompletableFuture<>();
 
         try {
             String endpoint = "/v3/order";
@@ -309,27 +326,45 @@ public class BinanceAccountOperations implements AccountOperations{
                 @Override
                 public void onFailure(Call call, IOException e) {
                     e.printStackTrace();
-                    future.complete(false);
+                    future.complete(new TradeResult(false, 0.0));
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    if (response.isSuccessful()) {
-                        System.out.println("Sell order placed successfully");
-                        future.complete(true);
-                    } else {
-                        System.out.println("Failed to place sell order: " + response.code() + " | " + response.message() + " | " + response.body().string());
-                        future.complete(false);
+                    try{
+                        if (response.isSuccessful()) {
+                            String responseBody = response.body().string();
+                            JSONObject json = new JSONObject(responseBody);
+                            JSONArray fills = json.getJSONArray("fills");
+                            double totalCommission = 0.0;
+
+                            for (int i = 0; i < fills.length(); i++) {
+                                JSONObject fill = fills.getJSONObject(i);
+                                double commission = fill.getDouble("commission");
+                                totalCommission += commission;
+                            }
+
+                            System.out.println("Sell order placed successfully");
+                            future.complete(new TradeResult(true, totalCommission));
+                        } else {
+                            System.out.println("Failed to place sell order: " + response.code() + " | " + response.message() + " | " + response.body().string());
+                            future.complete(new TradeResult(false, 0.0));
+                        }
                     }
+                    catch (Exception e){
+                        System.out.printf(e.getMessage());
+                    }
+
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
-            future.complete(false);
+            future.complete(new TradeResult(false, 0.0));
         }
 
         return future;
     }
+
     private String convertMillisToDate(long millis) {
         Date date = new Date(millis);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

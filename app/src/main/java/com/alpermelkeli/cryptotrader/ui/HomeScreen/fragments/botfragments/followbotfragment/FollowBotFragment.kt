@@ -23,7 +23,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.alpermelkeli.cryptotrader.databinding.FragmentFollowBotBinding
-import com.alpermelkeli.cryptotrader.model.FollowBotManager
+import com.alpermelkeli.cryptotrader.model.bot.FollowBotManager
 import com.alpermelkeli.cryptotrader.repository.apiRepository.ApiStorage
 import com.alpermelkeli.cryptotrader.repository.botRepository.ram.BotManagerStorage
 import com.google.android.material.materialswitch.MaterialSwitch

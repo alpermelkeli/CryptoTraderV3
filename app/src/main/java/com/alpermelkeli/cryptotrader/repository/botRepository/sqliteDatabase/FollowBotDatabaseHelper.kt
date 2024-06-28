@@ -3,7 +3,6 @@ package com.alpermelkeli.cryptotrader.repository.botRepository.sqliteDatabase
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.alpermelkeli.cryptotrader.model.FollowBotManager
 
 class FollowBotDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION), DataBaseHelper<FollowBotEntity> {
     companion object {
