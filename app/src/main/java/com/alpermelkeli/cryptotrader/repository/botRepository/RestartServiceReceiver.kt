@@ -23,7 +23,6 @@ class RestartReceiver : BroadcastReceiver() {
                 action = "START_SERVICE"
             }
             context.startService(intent)
-            Toast.makeText(context, "Servis başlatıldı, bildirimden sonra botları kurmaya başlayabilirsiniz.", Toast.LENGTH_LONG).show()
         }
     }
 

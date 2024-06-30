@@ -1,4 +1,4 @@
-package com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.profilefragment.adapter
+package com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.profilefragment.adapter.api
 
 import androidx.recyclerview.widget.RecyclerView
 import com.alpermelkeli.cryptotrader.databinding.ItemApiBinding

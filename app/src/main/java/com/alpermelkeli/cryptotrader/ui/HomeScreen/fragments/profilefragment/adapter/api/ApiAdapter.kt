@@ -1,4 +1,4 @@
-package com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.profilefragment.adapter
+package com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.profilefragment.adapter.api
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -3,6 +3,7 @@ package com.alpermelkeli.cryptotrader.repository.cryptoApi;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import com.alpermelkeli.cryptotrader.model.view.Coin;
 import com.alpermelkeli.cryptotrader.model.view.Trade;
 import com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance.TradeResult;
 
@@ -10,6 +11,7 @@ public interface AccountOperations {
     CompletableFuture<TradeResult> buyCoin(String symbol, double quantity);
     CompletableFuture<TradeResult> sellCoin(String symbol, double quantity);
     double getAccountBalance();
+    CompletableFuture<List<Coin>> getAccountWallet();
     double getSelectedCoinQuantity(String asset);
     CompletableFuture<List<Trade>> getTradeHistorySelectedCoin(String pairName);
     CompletableFuture<Boolean> openLongToCoin(String symbol, double quantity, int leverage);

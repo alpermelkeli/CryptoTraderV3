@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.alpermelkeli.cryptotrader.databinding.FragmentApiSettingsBinding
 import com.alpermelkeli.cryptotrader.repository.apiRepository.ApiStorage
 import com.alpermelkeli.cryptotrader.repository.apiRepository.sqliteDatabase.ApiEntity
-import com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.profilefragment.adapter.ApiAdapter
+import com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.profilefragment.adapter.api.ApiAdapter
 import com.alpermelkeli.cryptotrader.R
 import com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.profilefragment.adapter.CenterItemDecoration
 

@@ -1,5 +1,6 @@
 package com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance;
 
+import com.alpermelkeli.cryptotrader.model.view.Coin;
 import com.alpermelkeli.cryptotrader.model.view.Trade;
 import com.alpermelkeli.cryptotrader.repository.cryptoApi.AccountOperations;
 
@@ -118,8 +119,59 @@ public class BinanceAccountOperations implements AccountOperations{
             return 0.0;
         }
     }
+    @Override
+    public CompletableFuture<List<Coin>> getAccountWallet() {
+        return CompletableFuture.supplyAsync(() -> {
+            List<Coin> coinWallet = new ArrayList<>();
+            try {
+                long timestamp = System.currentTimeMillis();
+                String queryString = "timestamp=" + timestamp;
+                String signature = generateSignature(queryString);
+                queryString += "&signature=" + encode(signature);
+
+                HttpUrl httpUrl = HttpUrl.parse(API_URL)
+                        .newBuilder()
+                        .encodedQuery(queryString)
+                        .build();
+
+                Request request = new Request.Builder()
+                        .url(httpUrl)
+                        .addHeader("X-MBX-APIKEY", API_KEY)
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    if (!response.isSuccessful()) {
+                        System.out.println("Request failed: " + response);
+                        throw new IOException("Unexpected code " + response);
+                    }
+
+                    String responseBody = response.body().string();
+                    JSONObject json = new JSONObject(responseBody);
+                    JSONArray balances = json.getJSONArray("balances");
+
+                    for (int i = 0; i < balances.length(); i++) {
+                        JSONObject balanceJson = balances.getJSONObject(i);
+                        String coinName = balanceJson.getString("asset");
+                        double quantity = balanceJson.getDouble("free");
+                        double locked = balanceJson.getDouble("locked");
+
+                        if (quantity > 0 || locked > 0) {
+                            double totalQuantity = quantity + locked;
+                            Coin coin = new Coin(coinName, totalQuantity, convertToUSDT(coinName, totalQuantity));
+                            coinWallet.add(coin);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+            return coinWallet;
+        });
+    }
     private double convertToUSDT(String asset, double amount) {
         try {
+            if(asset.equals("USDT")){return amount;}
             // API endpoint to get the price of the asset in USDT
             String tickerPriceUrl = "https://api.binance.com/api/v3/ticker/price?symbol=" + asset + "USDT";
 

@@ -1,0 +1,32 @@
+<!-- item_coin.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/coin_name"
+        android:layout_width="0dp"
+        android:textColor="@color/white"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Coin Name" />
+
+    <TextView
+        android:id="@+id/coin_quantity"
+        android:layout_width="0dp"
+        android:textColor="@color/white"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Quantity" />
+
+    <TextView
+        android:id="@+id/coin_worth"
+        android:layout_width="0dp"
+        android:textColor="@color/white"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Worth" />
+
+</LinearLayout>
