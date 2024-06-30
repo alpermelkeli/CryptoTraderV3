@@ -127,12 +127,12 @@ class ManuelBotDetailsActivity : AppCompatActivity() {
               "theme": "dark",
               "style": "1",
               "locale": "en",
-              "backgroundColor": "rgba(28, 23, 24, 1)",
-              "gridColor": "rgba(28, 23, 24, 1)",
+              "backgroundColor": "rgba(0, 0, 0, 1)",
+              "gridColor": "rgba(0, 0, 0, 0.06)",
               "hide_legend": true,
               "allow_symbol_change": true,
               "calendar": false,
-              "support_host": "https://www.tradingview.com"
+              "support_host": "https://www.t    radingview.com"
             }
             </script>
         </div>

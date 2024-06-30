@@ -1,17 +1,20 @@
 package com.alpermelkeli.cryptotrader.repository.botRepository
 
 
+import android.app.AlarmManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.os.SystemClock
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
@@ -29,19 +32,7 @@ import kotlinx.coroutines.*
 class BotService : Service() {
     private lateinit var manuelBotManagers : MutableMap<String, ManuelBotManager>
     private lateinit var followBotManagers : MutableMap<String, FollowBotManager>
-    private val RESTART_INTERVAL_MS = 20 * 60 * 1000L // 20 minute
-
-    private val restartHandler = Handler(Looper.getMainLooper())
-
-    private val restartRunnable = object : Runnable {
-        override fun run() {
-            restartAllBots()
-            restartHandler.postDelayed(
-                this,
-                RESTART_INTERVAL_MS
-            )
-        }
-    }
+    private val RESTART_INTERVAL_MS = 10 * 60 * 1000L // 16-17 dakika
     override fun onCreate() {
         super.onCreate()
         BotManagerStorage.initialize(applicationContext)
@@ -50,9 +41,23 @@ class BotService : Service() {
         createNotificationChannel()
         instance = this
         restartAllBots()
-        restartHandler.postDelayed(restartRunnable, RESTART_INTERVAL_MS)
+        scheduleServiceRestart()
 
     }
+    private fun scheduleServiceRestart() {
+        val restartIntent = Intent(this, RestartReceiver::class.java).apply {
+            action = "com.alpermelkeli.cryptotrader.RESTART_SERVICE"
+        }
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, restartIntent, PendingIntent.FLAG_IMMUTABLE)
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setRepeating(
+            AlarmManager.ELAPSED_REALTIME_WAKEUP,
+            SystemClock.elapsedRealtime() + RESTART_INTERVAL_MS,
+            RESTART_INTERVAL_MS,
+            pendingIntent
+        )
+    }
+
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
 
@@ -101,7 +106,6 @@ class BotService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         Log.d("BotService", "Service Destroyed")
-        sendNotificationInternal("Servis durduruldu", "Servis Durduruldu.")
     }
 
 

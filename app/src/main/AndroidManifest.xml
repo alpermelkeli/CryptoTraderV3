@@ -37,11 +37,12 @@
             android:exported="false"
             android:foregroundServiceType="dataSync"
             android:stopWithTask="false" />
-        <receiver android:name=".repository.botRepository.RestartServiceReceiver" android:enabled="true" android:exported="true">
+        <receiver android:name=".repository.botRepository.RestartReceiver" android:enabled="true" android:exported="false">
             <intent-filter>
-                <action android:name="com.alpermelkeli.cryptotrader.RESTART_SERVICE" />
+                <action android:name="com.alpermelkeli.cryptotrader.RESTART_SERVICE"/>
             </intent-filter>
         </receiver>
+
 
         <activity
             android:name=".ui.HomeScreen.fragments.botfragments.manuelbotfragment.ManuelBotDetailsActivity"

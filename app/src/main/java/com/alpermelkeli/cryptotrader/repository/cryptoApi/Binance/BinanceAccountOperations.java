@@ -368,7 +368,7 @@ public class BinanceAccountOperations implements AccountOperations{
     private String convertMillisToDate(long millis) {
         Date date = new Date(millis);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT+3:00"));
         return sdf.format(date);
     }
     @Override
