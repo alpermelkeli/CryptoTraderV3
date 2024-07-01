@@ -9,8 +9,6 @@
         <rotate
             android:fromDegrees="0"
             android:toDegrees="360"
-            android:pivotX="50%"
-            android:pivotY="50%"
             android:repeatCount="infinite">
             <shape android:shape="ring">
                 <solid android:color="#C1FF72"/>

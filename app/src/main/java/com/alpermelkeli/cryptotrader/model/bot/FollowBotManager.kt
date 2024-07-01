@@ -6,6 +6,12 @@ import com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance.BinanceAccount
 import com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance.BinanceWebSocketManager
 import com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance.BinanceWebSocketManager.BinanceWebSocketListener
 import com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance.TradeResult
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import okhttp3.Response
+import okhttp3.WebSocket
 
 class FollowBotManager(
     id: String,
@@ -24,8 +30,7 @@ class FollowBotManager(
 ) : BotManager(id, firstPairName, secondPairName, pairName, threshold, amount, exchangeMarket, status, apiKey, secretKey, openPosition) {
 
     private val binanceAccountOperations = BinanceAccountOperations(apiKey, secretKey)
-    private val thresholdManager: ThresholdManager =
-        ThresholdManager()
+    private val thresholdManager: ThresholdManager = ThresholdManager()
     private var webSocketManager: BinanceWebSocketManager? = null
 
     override fun start() {
@@ -39,6 +44,15 @@ class FollowBotManager(
             override fun onPriceUpdate(price: String) {
                 val currentPrice = price.toDouble()
                 handlePriceUpdate(currentPrice)
+            }
+            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+                super.onFailure(webSocket, t, response)
+                BotService.sendNotification("Botun bağlantısı koptu!","Yeniden bağlantı deneniyor...")
+                CoroutineScope(Dispatchers.Main).launch {
+                    stop()
+                    delay(10000)
+                    start()
+                }
             }
         }
         webSocketManager = BinanceWebSocketManager(listener)

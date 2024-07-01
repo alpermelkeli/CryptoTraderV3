@@ -78,8 +78,6 @@ public class BinanceWebSocketManager extends WebSocketManager {
         @Override
         public void onFailure(WebSocket webSocket, Throwable t, Response response) {
             super.onFailure(webSocket, t, response);
-            Log.d("WebSocket", "Websocket failure");
-            BotService.Companion.sendNotification("Bağlantı koptu! ", "Botun bağlantısı koptu. İnternete bağlanıp uygulamayı tekrar çalıştırın veya 20 dakika içinde tekrar bağlantı denenecek.");
         }
 
         /**

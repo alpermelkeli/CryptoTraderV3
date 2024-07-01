@@ -1,5 +1,6 @@
 package com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.profilefragment
 
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.LinearInterpolator
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.NavOptions
@@ -39,6 +41,8 @@ class ProfileFragment : Fragment() {
 
         binding = FragmentProfileBinding.inflate(inflater, container, false)
 
+        setProgressBarAnimation()
+
         initializeAccountOperations()
 
         binding.settingsButton.setOnClickListener{
@@ -46,6 +50,13 @@ class ProfileFragment : Fragment() {
         }
 
         return binding.root
+    }
+    private fun setProgressBarAnimation(){
+        val animator = ObjectAnimator.ofFloat(binding.walletRecyclerProgressBar, "rotation", 0f, 360f)
+        animator.duration = 630
+        animator.repeatCount = ObjectAnimator.INFINITE
+        animator.interpolator = LinearInterpolator()
+        animator.start()
     }
     override fun onResume() {
         super.onResume()
@@ -128,6 +139,7 @@ class ProfileFragment : Fragment() {
                         coinList.add(coin)
                         adapter.notifyItemInserted(adapter.itemCount)
                     }
+                    binding.walletRecyclerProgressBar.visibility = View.GONE
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

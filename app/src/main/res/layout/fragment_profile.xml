@@ -124,14 +124,75 @@
 
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/walletRecyclerView"
+        <LinearLayout
+            android:id="@+id/informationLayout"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+            <TextView
+                android:paddingStart="12dp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Coin"
+                android:textColor="@color/white"
+                android:fontFamily="@font/lato_bold"
+                android:textSize="15sp"
+                android:textAlignment="center"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Miktar"
+                android:textColor="@color/white"
+                android:fontFamily="@font/lato_bold"
+                android:textSize="15sp"
+                android:textAlignment="center"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Değer(USDT)"
+                android:textColor="@color/white"
+                android:fontFamily="@font/lato_bold"
+                android:textSize="15sp"
+                android:textAlignment="center"/>
+
+        </LinearLayout>
+
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+            app:layout_constraintTop_toBottomOf="@+id/informationLayout"
+
+            >
+            <ProgressBar
+                android:id="@+id/walletRecyclerProgressBar"
+                android:layout_width="40dp"
+                android:indeterminateDrawable="@drawable/custom_progress_bar"
+                android:indeterminate="true"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/walletRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+        </FrameLayout>
+
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
