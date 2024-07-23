@@ -11,8 +11,8 @@ import com.alpermelkeli.cryptotrader.databinding.ActivityFollowBotDetailsBinding
 import com.alpermelkeli.cryptotrader.model.view.Trade
 import com.alpermelkeli.cryptotrader.repository.botRepository.BotService
 import com.alpermelkeli.cryptotrader.repository.botRepository.ram.BotManagerStorage
-import com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance.BinanceAccountOperations
 import com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.botfragments.adapter.TradesAdapter
+import com.alpermelkeli.cryptotrader.viewmodel.AccountViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,7 +22,7 @@ import java.util.concurrent.CompletableFuture
 class FollowBotDetailsActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityFollowBotDetailsBinding
-    private lateinit var binanceAccountOperations : BinanceAccountOperations
+    private lateinit var accountViewModel: AccountViewModel
     private lateinit var adapter: TradesAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -40,7 +40,9 @@ class FollowBotDetailsActivity : AppCompatActivity() {
 
             val SECRET_KEY = intent.getStringExtra("SECRET_KEY")!!
 
-            initializeAccountOperations(API_KEY,SECRET_KEY)
+            accountViewModel = AccountViewModel(API_KEY,SECRET_KEY)
+
+            accountViewModel.getTradeHistory(pairName)
 
             setContentView(binding.root)
 
@@ -72,7 +74,7 @@ class FollowBotDetailsActivity : AppCompatActivity() {
             val distanceInterval = botManager.distanceInterval
             val followInterval = botManager.followInterval
             getPairsQuantities(firstPairName,secondPairName)
-            setUpTradeHistoryRecycler(pairName)
+            setUpTradeHistoryRecycler()
             binding.botIdText.text = id
             binding.pairText.text = pairName
             binding.firstPairText.text = firstPairName
@@ -84,15 +86,10 @@ class FollowBotDetailsActivity : AppCompatActivity() {
             binding.openPositionText.text = if(openPosition) "Pozisyon Açık" else "Pozisyon Kapalı"
         }
     }
-    private fun setUpTradeHistoryRecycler(pairName:String){
-        CoroutineScope(Dispatchers.IO).launch {
-            val tradeHistoryFuture: CompletableFuture<List<Trade>> = binanceAccountOperations.getTradeHistorySelectedCoin(pairName)
-            val tradeHistory = tradeHistoryFuture.get()
-
-            withContext(Dispatchers.Main) {
-                adapter = TradesAdapter(tradeHistory)
-                binding.tradeHistoryRecyclerView.adapter = adapter
-            }
+    private fun setUpTradeHistoryRecycler(){
+        accountViewModel.tradeHistory.observe(this){
+            adapter = TradesAdapter(it)
+            binding.tradeHistoryRecyclerView.adapter = adapter
         }
     }
     private fun setUpWebView(pairName: String) {
@@ -149,18 +146,16 @@ class FollowBotDetailsActivity : AppCompatActivity() {
         webview.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null)
     }
     private fun getPairsQuantities(firstPair: String, secondPair: String) {
-        lifecycleScope.launch {
-            val firstQuantity = withContext(Dispatchers.IO) {
-                binanceAccountOperations.getSelectedCoinQuantity(firstPair)
-            }
-            val secondQuantity = withContext(Dispatchers.IO) {
-                binanceAccountOperations.getSelectedCoinQuantity(secondPair)
-            }
+        accountViewModel.getFirstPairQuantity(firstPair)
+        accountViewModel.getSecondPairQuantity(secondPair)
+        accountViewModel.firstPairQuantity.observe(this){
+            binding.firstPairQuantityText.text = it.toString()
 
-            binding.firstPairQuantityText.text = firstQuantity.toString()
-            binding.secondPairQuantityText.text = secondQuantity.toString()
         }
+        accountViewModel.secondPairQuantity.observe(this){
+            binding.secondPairQuantityText.text = it.toString()
 
+        }
     }
     private fun stopTradingBot(id: String) {
         BotService.stopFollowBot(id)
@@ -168,9 +163,5 @@ class FollowBotDetailsActivity : AppCompatActivity() {
     private fun updateTradingBot(id:String,amount:Double,threshold:Double, distanceInterval:Double, followInterval:Double){
         BotService.updateFollowBot(id,amount,threshold,distanceInterval, followInterval)
     }
-    private fun initializeAccountOperations(API_KEY:String,SECRET_KEY:String) {
-        binanceAccountOperations = BinanceAccountOperations(API_KEY,SECRET_KEY)
-    }
-
 
 }

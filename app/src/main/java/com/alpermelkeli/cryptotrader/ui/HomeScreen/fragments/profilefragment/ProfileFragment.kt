@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,20 +17,19 @@ import com.alpermelkeli.cryptotrader.R
 import com.alpermelkeli.cryptotrader.databinding.FragmentProfileBinding
 import com.alpermelkeli.cryptotrader.model.view.Coin
 import com.alpermelkeli.cryptotrader.repository.apiRepository.ApiStorage
-import com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance.BinanceAccountOperations
 import com.alpermelkeli.cryptotrader.ui.HomeScreen.HomeScreen
 import com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.profilefragment.adapter.wallet.WalletAdapter
+import com.alpermelkeli.cryptotrader.viewmodel.AccountViewModel
 import com.alpermelkeli.cryptotrader.viewmodel.UserViewModel
 import com.alpermelkeli.cryptotrader.viewmodel.UserViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.future.await
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ProfileFragment : Fragment() {
     private lateinit var binding : FragmentProfileBinding
-    private lateinit var binanceAccountOperations: BinanceAccountOperations
+    private lateinit var accountViewModel: AccountViewModel
     private lateinit var adapter: WalletAdapter
     private val userViewModel: UserViewModel by viewModels {
         UserViewModelFactory(requireContext())
@@ -79,17 +77,14 @@ class ProfileFragment : Fragment() {
             withContext(Dispatchers.Main) {
                 val API_KEY = selectedAPI?.apiKey ?: ""
                 val SECRET_KEY = selectedAPI?.secretKey ?: ""
-                binanceAccountOperations = BinanceAccountOperations(API_KEY, SECRET_KEY)
+                accountViewModel = AccountViewModel(API_KEY,SECRET_KEY)
                 onAccountOperationsInitialized()
             }
         }
     }
     private fun updateAccountBalance() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val balance = binanceAccountOperations.accountBalance
-            withContext(Dispatchers.Main) {
-                updateAccountBalanceAnimated(balance)
-            }
+        accountViewModel.balance.observe(viewLifecycleOwner) {
+            updateAccountBalanceAnimated(it)
         }
     }
     private fun updateAccountBalanceAnimated(newBalance: Double) {
@@ -104,7 +99,22 @@ class ProfileFragment : Fragment() {
         animator.start()
     }
     private fun onAccountOperationsInitialized() {
+        accountViewModel.getAccountWallet()
+        accountViewModel.getBalance()
         setUpUserUI()
+    }
+    private fun setupWalletRecycler() {
+        val coinList = mutableListOf<Coin>()
+        adapter = WalletAdapter(coinList)
+        binding.walletRecyclerView.layoutManager = LinearLayoutManager(context)
+        binding.walletRecyclerView.adapter = adapter
+        accountViewModel.accountWallet.observe(viewLifecycleOwner){
+            for (coin in it){
+                coinList.add(coin)
+                adapter.notifyItemInserted(adapter.itemCount)
+            }
+            binding.walletRecyclerProgressBar.visibility = View.GONE
+        }
     }
     private fun setUpUserUI(){
         userViewModel.user.observe(viewLifecycleOwner) { user ->
@@ -113,37 +123,5 @@ class ProfileFragment : Fragment() {
         userViewModel.getCurrentUser()
         updateAccountBalance()
         setupWalletRecycler()
-        /*
-        userViewModel.userDocument.observe(viewLifecycleOwner, Observer { document ->
-            if (document != null) {
-                binding.profileIDText.text = document.get("email").toString()
-            }
-            else {
-
-            }
-        })
-        userViewModel.fetchUserDocument()
-         */
-    }
-    private fun setupWalletRecycler() {
-        val coinList = mutableListOf<Coin>()
-        adapter = WalletAdapter(coinList)
-        binding.walletRecyclerView.layoutManager = LinearLayoutManager(context)
-        binding.walletRecyclerView.adapter = adapter
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val coins = binanceAccountOperations.accountWallet.await()
-
-                withContext(Dispatchers.Main) {
-                    for(coin in coins){
-                        coinList.add(coin)
-                        adapter.notifyItemInserted(adapter.itemCount)
-                    }
-                    binding.walletRecyclerProgressBar.visibility = View.GONE
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
     }
 }

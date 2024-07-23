@@ -9,11 +9,7 @@ import android.widget.Toast
 class RestartReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == "com.alpermelkeli.cryptotrader.RESTART_SERVICE") {
-
-            context.stopService(Intent(context, BotService::class.java))
-
             startBotServiceIfNotRunning(context)
-
         }
     }
 

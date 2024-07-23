@@ -11,8 +11,8 @@ import com.alpermelkeli.cryptotrader.databinding.ActivityManuelBotDetailsBinding
 import com.alpermelkeli.cryptotrader.model.view.Trade
 import com.alpermelkeli.cryptotrader.repository.botRepository.BotService
 import com.alpermelkeli.cryptotrader.repository.botRepository.ram.BotManagerStorage
-import com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance.BinanceAccountOperations
 import com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.botfragments.adapter.TradesAdapter
+import com.alpermelkeli.cryptotrader.viewmodel.AccountViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,7 +21,7 @@ import java.util.concurrent.CompletableFuture
 
 class ManuelBotDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityManuelBotDetailsBinding
-    private lateinit var binanceAccountOperations : BinanceAccountOperations
+    private lateinit var accountViewModel: AccountViewModel
     private lateinit var adapter: TradesAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -40,7 +40,11 @@ class ManuelBotDetailsActivity : AppCompatActivity() {
 
         val SECRET_KEY = intent.getStringExtra("SECRET_KEY")!!
 
-        initializeAccountOperations(API_KEY,SECRET_KEY)
+
+        accountViewModel = AccountViewModel(API_KEY,SECRET_KEY)
+
+        accountViewModel.getTradeHistory(pairName)
+
 
         setContentView(binding.root)
 
@@ -69,7 +73,7 @@ class ManuelBotDetailsActivity : AppCompatActivity() {
             val threshold = botManager.threshold
             val openPosition = botManager.openPosition
             getPairsQuantities(firstPairName,secondPairName)
-            setUpTradeHistoryRecycler(pairName)
+            setUpTradeHistoryRecycler()
             binding.botIdText.text = id
             binding.pairText.text = pairName
             binding.firstPairText.text = firstPairName
@@ -79,15 +83,10 @@ class ManuelBotDetailsActivity : AppCompatActivity() {
             binding.openPositionText.text = if(openPosition) "Pozisyon Açık" else "Pozisyon Kapalı"
         }
     }
-    private fun setUpTradeHistoryRecycler(pairName:String){
-        CoroutineScope(Dispatchers.IO).launch {
-            val tradeHistoryFuture: CompletableFuture<List<Trade>> = binanceAccountOperations.getTradeHistorySelectedCoin(pairName)
-            val tradeHistory = tradeHistoryFuture.get()
-
-            withContext(Dispatchers.Main) {
-                adapter = TradesAdapter(tradeHistory)
-                binding.tradeHistoryRecyclerView.adapter = adapter
-            }
+    private fun setUpTradeHistoryRecycler(){
+        accountViewModel.tradeHistory.observe(this){
+            adapter = TradesAdapter(it)
+            binding.tradeHistoryRecyclerView.adapter = adapter
         }
     }
     private fun setUpWebView(pairName: String) {
@@ -144,18 +143,14 @@ class ManuelBotDetailsActivity : AppCompatActivity() {
         webview.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null)
     }
     private fun getPairsQuantities(firstPair: String, secondPair: String) {
-        lifecycleScope.launch {
-            val firstQuantity = withContext(Dispatchers.IO) {
-                binanceAccountOperations.getSelectedCoinQuantity(firstPair)
-            }
-            val secondQuantity = withContext(Dispatchers.IO) {
-                binanceAccountOperations.getSelectedCoinQuantity(secondPair)
-            }
-
-            binding.firstPairQuantityText.text = firstQuantity.toString()
-            binding.secondPairQuantityText.text = secondQuantity.toString()
+        accountViewModel.getFirstPairQuantity(firstPair)
+        accountViewModel.getSecondPairQuantity(secondPair)
+        accountViewModel.firstPairQuantity.observe(this){
+            binding.firstPairQuantityText.text = it.toString()
         }
-
+        accountViewModel.secondPairQuantity.observe(this){
+            binding.secondPairQuantityText.text = it.toString()
+        }
     }
     private fun stopTradingBot(id: String) {
         BotService.stopManuelBot(id)
@@ -163,7 +158,5 @@ class ManuelBotDetailsActivity : AppCompatActivity() {
     private fun updateTradingBot(id:String,amount:Double,threshold:Double){
         BotService.updateManuelBot(id,amount,threshold)
     }
-    private fun initializeAccountOperations(API_KEY:String,SECRET_KEY:String) {
-        binanceAccountOperations = BinanceAccountOperations(API_KEY,SECRET_KEY)
-    }
+
 }

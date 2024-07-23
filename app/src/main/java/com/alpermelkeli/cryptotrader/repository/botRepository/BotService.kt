@@ -57,6 +57,15 @@ class BotService : Service() {
             pendingIntent
         )
     }
+    private fun cancelServiceRestart() {
+        val restartIntent = Intent(this, RestartReceiver::class.java).apply {
+            action = "com.alpermelkeli.cryptotrader.RESTART_SERVICE"
+        }
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, restartIntent, PendingIntent.FLAG_IMMUTABLE)
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.cancel(pendingIntent)
+        pendingIntent.cancel()
+    }
 
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -231,6 +240,7 @@ class BotService : Service() {
             instance.sendNotificationInternal(title, message)
         }
         fun stopService() {
+            instance.cancelServiceRestart()
             instance.stopAllManuelBots()
             instance.stopAllFollowBots()
             instance.stopSelf()

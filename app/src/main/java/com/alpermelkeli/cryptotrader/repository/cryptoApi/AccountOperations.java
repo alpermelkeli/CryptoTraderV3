@@ -10,9 +10,9 @@ import com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance.TradeResult;
 public interface AccountOperations {
     CompletableFuture<TradeResult> buyCoin(String symbol, double quantity);
     CompletableFuture<TradeResult> sellCoin(String symbol, double quantity);
-    double getAccountBalance();
+    CompletableFuture<Double> getAccountBalance();
     CompletableFuture<List<Coin>> getAccountWallet();
-    double getSelectedCoinQuantity(String asset);
+    CompletableFuture<Double> getSelectedCoinQuantity(String asset);
     CompletableFuture<List<Trade>> getTradeHistorySelectedCoin(String pairName);
     CompletableFuture<Boolean> openLongToCoin(String symbol, double quantity, int leverage);
     CompletableFuture<Boolean> openShortToCoin(String symbol, double quantity, int leverage);

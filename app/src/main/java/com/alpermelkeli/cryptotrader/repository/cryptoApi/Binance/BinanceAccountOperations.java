@@ -74,50 +74,51 @@ public class BinanceAccountOperations implements AccountOperations{
     }
 
     @Override
-    public double getAccountBalance() {
-        try {
-            long timestamp = System.currentTimeMillis();
-            String queryString = "timestamp=" + timestamp;
-            String signature = generateSignature(queryString);
-            queryString += "&signature=" + encode(signature);
+    public CompletableFuture<Double> getAccountBalance() {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                long timestamp = System.currentTimeMillis();
+                String queryString = "timestamp=" + timestamp;
+                String signature = generateSignature(queryString);
+                queryString += "&signature=" + encode(signature);
 
-            HttpUrl httpUrl = HttpUrl.parse(API_URL).newBuilder().encodedQuery(queryString).build();
+                HttpUrl httpUrl = HttpUrl.parse(API_URL).newBuilder().encodedQuery(queryString).build();
 
-            Request request = new Request.Builder()
-                    .url(httpUrl)
-                    .addHeader("X-MBX-APIKEY", API_KEY)
-                    .build();
+                Request request = new Request.Builder()
+                        .url(httpUrl)
+                        .addHeader("X-MBX-APIKEY", API_KEY)
+                        .build();
 
 
-            try (Response response = client.newCall(request).execute()) {
-                if (!response.isSuccessful()) {
-                    throw new IOException("Unexpected code " + response);
-                }
-
-                String responseBody = response.body().string();
-                JSONObject json = new JSONObject(responseBody);
-                JSONArray balances = json.getJSONArray("balances");
-                double totalBalance = 0.0;
-                for (int i = 0; i < balances.length(); i++) {
-                    JSONObject balance = balances.getJSONObject(i);
-                    String asset = balance.getString("asset");
-                    double free = balance.getDouble("free");
-                    double locked = balance.getDouble("locked");
-
-                    if(asset.equals("USDT")){
-                        totalBalance+=free+locked;
+                try (Response response = client.newCall(request).execute()) {
+                    if (!response.isSuccessful()) {
+                        throw new IOException("Unexpected code " + response);
                     }
-                    else if(free+locked!=0){
-                        totalBalance += convertToUSDT(balance.getString("asset"),balance.getDouble("free") + balance.getDouble("locked"));
+
+                    String responseBody = response.body().string();
+                    JSONObject json = new JSONObject(responseBody);
+                    JSONArray balances = json.getJSONArray("balances");
+                    double totalBalance = 0.0;
+                    for (int i = 0; i < balances.length(); i++) {
+                        JSONObject balance = balances.getJSONObject(i);
+                        String asset = balance.getString("asset");
+                        double free = balance.getDouble("free");
+                        double locked = balance.getDouble("locked");
+
+                        if (asset.equals("USDT")) {
+                            totalBalance += free + locked;
+                        } else if (free + locked != 0) {
+                            totalBalance += convertToUSDT(balance.getString("asset"), balance.getDouble("free") + balance.getDouble("locked"));
+                        }
                     }
+                    return totalBalance;
                 }
-                return totalBalance;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+                return 0.0;
             }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            return 0.0;
-        }
+        });
     }
     @Override
     public CompletableFuture<List<Coin>> getAccountWallet() {
@@ -199,43 +200,46 @@ public class BinanceAccountOperations implements AccountOperations{
         }
     }
     @Override
-    public double getSelectedCoinQuantity(String asset) {
-        try {
-            long timestamp = System.currentTimeMillis();
-            String queryString = "timestamp=" + timestamp;
-            String signature = generateSignature(queryString);
-            queryString += "&signature=" + encode(signature);
+    public CompletableFuture<Double> getSelectedCoinQuantity(String asset) {
+        return CompletableFuture.supplyAsync(() -> {
 
-            HttpUrl httpUrl = HttpUrl.parse(API_URL).newBuilder().encodedQuery(queryString).build();
+            try {
+                long timestamp = System.currentTimeMillis();
+                String queryString = "timestamp=" + timestamp;
+                String signature = generateSignature(queryString);
+                queryString += "&signature=" + encode(signature);
 
-            Request request = new Request.Builder()
-                    .url(httpUrl)
-                    .addHeader("X-MBX-APIKEY", API_KEY)
-                    .build();
+                HttpUrl httpUrl = HttpUrl.parse(API_URL).newBuilder().encodedQuery(queryString).build();
 
-            try (Response response = client.newCall(request).execute()) {
-                if (!response.isSuccessful()) {
-                    throw new IOException("Unexpected code " + response);
-                }
+                Request request = new Request.Builder()
+                        .url(httpUrl)
+                        .addHeader("X-MBX-APIKEY", API_KEY)
+                        .build();
 
-                String responseBody = response.body().string();
-                JSONObject json = new JSONObject(responseBody);
-                JSONArray balances = json.getJSONArray("balances");
+                try (Response response = client.newCall(request).execute()) {
+                    if (!response.isSuccessful()) {
+                        throw new IOException("Unexpected code " + response);
+                    }
 
-                for (int i = 0; i < balances.length(); i++) {
-                    JSONObject balance = balances.getJSONObject(i);
-                    if (balance.getString("asset").equalsIgnoreCase(asset)) {
-                        double free = balance.getDouble("free");
-                        double locked = balance.getDouble("locked");
-                        return free + locked;
+                    String responseBody = response.body().string();
+                    JSONObject json = new JSONObject(responseBody);
+                    JSONArray balances = json.getJSONArray("balances");
+
+                    for (int i = 0; i < balances.length(); i++) {
+                        JSONObject balance = balances.getJSONObject(i);
+                        if (balance.getString("asset").equalsIgnoreCase(asset)) {
+                            double free = balance.getDouble("free");
+                            double locked = balance.getDouble("locked");
+                            return free + locked;
+                        }
                     }
                 }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        return 0.0;
+            return 0.0;
+        });
     }
     @Override
     public CompletableFuture<List<Trade>> getTradeHistorySelectedCoin(String pairName) {

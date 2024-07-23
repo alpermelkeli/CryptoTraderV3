@@ -13,18 +13,21 @@ import com.alpermelkeli.cryptotrader.R
 import com.alpermelkeli.cryptotrader.databinding.FragmentHomeBinding
 import com.alpermelkeli.cryptotrader.repository.apiRepository.ApiStorage
 import com.alpermelkeli.cryptotrader.repository.botRepository.ram.BotManagerStorage
-import com.alpermelkeli.cryptotrader.repository.cryptoApi.Binance.BinanceAccountOperations
+import com.alpermelkeli.cryptotrader.viewmodel.AccountViewModel
 import com.alpermelkeli.cryptotrader.viewmodel.UserViewModel
 import com.alpermelkeli.cryptotrader.viewmodel.UserViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.future.await
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var binanceAccountOperations: BinanceAccountOperations
+
+    private lateinit var accountViewModel: AccountViewModel
+
     private val userViewModel: UserViewModel by viewModels {
         UserViewModelFactory(requireContext())
     }
@@ -41,11 +44,8 @@ class HomeFragment : Fragment() {
         return binding.root
     }
     private fun updateAccountBalance() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val balance = binanceAccountOperations.accountBalance
-            withContext(Dispatchers.Main) {
-                updateAccountBalanceAnimated(balance)
-            }
+        accountViewModel.balance.observe(viewLifecycleOwner){
+            updateAccountBalanceAnimated(it)
         }
     }
     private fun updateAccountBalanceAnimated(newBalance: Double) {
@@ -67,12 +67,13 @@ class HomeFragment : Fragment() {
             withContext(Dispatchers.Main) {
                 val API_KEY = selectedAPI?.apiKey ?: ""
                 val SECRET_KEY = selectedAPI?.secretKey ?: ""
-                binanceAccountOperations = BinanceAccountOperations(API_KEY, SECRET_KEY)
+                accountViewModel = AccountViewModel(API_KEY,SECRET_KEY)
                 onAccountOperationsInitialized()
             }
         }
     }
     private fun onAccountOperationsInitialized() {
+        accountViewModel.getBalance()
         updateAccountBalance()
     }
     private fun setUpUserUI(){
