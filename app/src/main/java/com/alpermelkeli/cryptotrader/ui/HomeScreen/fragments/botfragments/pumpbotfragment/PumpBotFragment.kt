@@ -5,9 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.alpermelkeli.cryptotrader.R
 import com.alpermelkeli.cryptotrader.databinding.FragmentPumpBotBinding
-import com.alpermelkeli.cryptotrader.model.bot.PumpBotManager
 import com.alpermelkeli.cryptotrader.repository.botRepository.BotService
 import com.alpermelkeli.cryptotrader.repository.botRepository.ram.BotManagerStorage
 
@@ -23,37 +21,34 @@ class PumpBotFragment : Fragment() {
         binding = FragmentPumpBotBinding.inflate(inflater,container,false)
         retrieveBotInformation()
         binding.updateButton.setOnClickListener {
-            updatePumpBot(binding.limitEditText.text.toString().toDouble(),binding.percentEditText.text.toString().toInt(),binding.intervalEditText.text.toString())
+            updatePumpBot(binding.limitEditText.text.toString().toDouble(),binding.amountEditText.text.toString().toDouble(),binding.intervalEditText.text.toString())
         }
         binding.passiveButton.setOnClickListener {
             stopPumpBot()
         }
 
-
-
-
         return binding.root
     }
     private fun retrieveBotInformation(){
         val pumpBotManager = BotManagerStorage.getPumpBotManager()
-        pumpBotManager.let {
+        pumpBotManager?.let {
             binding.pairText.text = it?.pair
-            binding.openPositionText.text = it?.openPosition.toString()
-            binding.activeText.text = it?.active.toString()
+            binding.openPositionText.text = if(it?.openPosition!!) "Posizyon Açık" else "Pozisyon Kapalı"
+            binding.activeText.text = if(it?.active!!)"Bot Aktif" else "Bot Pasif"
+            binding.amountEditText.setText(it.amount.toString())
+            binding.intervalEditText.setText(it.interval)
+            binding.limitEditText.setText(it.limit.toString())
         }
 
     }
-
-
-
 
     private fun stopPumpBot(){
         BotService.stopPumpBot()
     }
     private fun updatePumpBot(
                                limit: Double,
-                               percent: Int,
+                               amount: Double,
                                interval: String){
-        BotService.updatePumpBot(limit, percent, interval)
+        BotService.updatePumpBot(limit, amount, interval)
     }
 }

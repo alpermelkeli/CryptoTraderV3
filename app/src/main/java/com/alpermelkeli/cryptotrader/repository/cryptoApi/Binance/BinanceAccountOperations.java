@@ -11,6 +11,8 @@ import org.json.JSONObject;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -199,6 +201,33 @@ public class BinanceAccountOperations implements AccountOperations{
             return 0.0;
         }
     }
+    private double convertToQuantity(String asset, double usdAmount){
+        try {
+            String tickerPriceUrl = "https://api.binance.com/api/v3/ticker/price?symbol=" + asset;
+
+            Request request = new Request.Builder()
+                    .url(tickerPriceUrl)
+                    .addHeader("X-MBX-APIKEY", API_KEY)
+                    .build();
+
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new IOException("Unexpected code " + response);
+                }
+
+                String responseBody = response.body().string();
+                JSONObject priceJson = new JSONObject(responseBody);
+                double price = priceJson.getDouble("price");
+
+                // Return the amount in USDT
+                return usdAmount / price;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return 0.0;
+        }
+    }
     @Override
     public CompletableFuture<Double> getSelectedCoinQuantity(String asset) {
         return CompletableFuture.supplyAsync(() -> {
@@ -356,6 +385,68 @@ public class BinanceAccountOperations implements AccountOperations{
 
         return future;
     }
+    public CompletableFuture<TradeResult> buyCoinWithUSDT(String symbol, double usdtQuantity) {
+        CompletableFuture<TradeResult> future = new CompletableFuture<>();
+        try {
+            String endpoint = "/v3/order";
+            String url = BASE_URL + endpoint;
+            double quantity = convertToQuantity(symbol,usdtQuantity);
+            BigDecimal roundedQuantity = new BigDecimal(quantity).setScale(2, RoundingMode.DOWN);
+            long timestamp = System.currentTimeMillis();
+            String queryString = "symbol=" + encode(symbol) + "&side=BUY&type=MARKET&quantity=" + roundedQuantity.toString() + "&timestamp=" + timestamp;
+            String signature = generateSignature(queryString);
+            queryString += "&signature=" + encode(signature);
+            System.out.println(queryString);
+            HttpUrl httpUrl = HttpUrl.parse(url).newBuilder().encodedQuery(queryString).build();
+
+            Request request = new Request.Builder()
+                    .url(httpUrl)
+                    .addHeader("X-MBX-APIKEY", API_KEY)
+                    .post(RequestBody.create(null, new byte[0]))
+                    .build();
+
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    e.printStackTrace();
+                    future.complete(new TradeResult(false, 0.0));
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    try{
+                        if (response.isSuccessful()) {
+                            String responseBody = response.body().string();
+                            JSONObject json = new JSONObject(responseBody);
+                            JSONArray fills = json.getJSONArray("fills");
+                            double totalCommission = 0.0;
+
+                            for (int i = 0; i < fills.length(); i++) {
+                                JSONObject fill = fills.getJSONObject(i);
+                                double commission = fill.getDouble("commission");
+                                totalCommission += commission;
+                            }
+
+                            System.out.println("Buy order placed successfully");
+                            future.complete(new TradeResult(true, totalCommission));
+                        } else {
+                            System.out.println("Failed to place buy order: " + response.code() + " | " + response.message() + " | " + response.body().string());
+                            future.complete(new TradeResult(false, 0.0));
+                        }
+                    }
+                    catch (Exception e){
+                        System.out.printf(e.getMessage());
+                    }
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            future.complete(new TradeResult(false, 0.0));
+        }
+
+        return future;
+    }
 
     @Override
     public CompletableFuture<TradeResult> sellCoin(String symbol, double quantity) {
@@ -367,6 +458,69 @@ public class BinanceAccountOperations implements AccountOperations{
 
             long timestamp = System.currentTimeMillis();
             String queryString = "symbol=" + encode(symbol) + "&side=SELL&type=MARKET&quantity=" + quantity + "&timestamp=" + timestamp;
+            String signature = generateSignature(queryString);
+            queryString += "&signature=" + encode(signature);
+
+            HttpUrl httpUrl = HttpUrl.parse(url).newBuilder().encodedQuery(queryString).build();
+
+            Request request = new Request.Builder()
+                    .url(httpUrl)
+                    .addHeader("X-MBX-APIKEY", API_KEY)
+                    .post(RequestBody.create(null, new byte[0]))
+                    .build();
+
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    e.printStackTrace();
+                    future.complete(new TradeResult(false, 0.0));
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    try{
+                        if (response.isSuccessful()) {
+                            String responseBody = response.body().string();
+                            JSONObject json = new JSONObject(responseBody);
+                            JSONArray fills = json.getJSONArray("fills");
+                            double totalCommission = 0.0;
+
+                            for (int i = 0; i < fills.length(); i++) {
+                                JSONObject fill = fills.getJSONObject(i);
+                                double commission = fill.getDouble("commission");
+                                totalCommission += commission;
+                            }
+
+                            System.out.println("Sell order placed successfully");
+                            future.complete(new TradeResult(true, totalCommission));
+                        } else {
+                            System.out.println("Failed to place sell order: " + response.code() + " | " + response.message() + " | " + response.body().string());
+                            future.complete(new TradeResult(false, 0.0));
+                        }
+                    }
+                    catch (Exception e){
+                        System.out.printf(e.getMessage());
+                    }
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            future.complete(new TradeResult(false, 0.0));
+        }
+
+        return future;
+    }
+    public CompletableFuture<TradeResult> sellCoinWithUSDT(String symbol, double usdtQuantity) {
+        CompletableFuture<TradeResult> future = new CompletableFuture<>();
+
+        try {
+            String endpoint = "/v3/order";
+            String url = BASE_URL + endpoint;
+            double quantity = convertToQuantity(symbol,usdtQuantity);
+            BigDecimal roundedQuantity = new BigDecimal(quantity).setScale(2, RoundingMode.DOWN);
+            long timestamp = System.currentTimeMillis();
+            String queryString = "symbol=" + encode(symbol) + "&side=SELL&type=MARKET&quantity=" + roundedQuantity + "&timestamp=" + timestamp;
             String signature = generateSignature(queryString);
             queryString += "&signature=" + encode(signature);
 

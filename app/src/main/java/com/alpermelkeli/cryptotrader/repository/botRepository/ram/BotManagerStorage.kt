@@ -18,6 +18,7 @@ object BotManagerStorage {
     private val followBotManagers: MutableMap<String, FollowBotManager> = mutableMapOf()
 
     private var pumpBotManager : PumpBotManager? = null
+
     private lateinit var manuelBotDbHelper: ManuelBotDatabaseHelper
 
     private lateinit var followBotDbHelper: FollowBotDatabaseHelper
@@ -137,7 +138,8 @@ object BotManagerStorage {
     }
     fun updatePumpBotManager(bot:PumpBotManager){
         bot.let {
-            pumpBotDatabaseHelper.updatePumpBot(PumpBotEntity(it.limit,it.openPosition,it.pair,it.percent,it.active,it.interval))
+            pumpBotDatabaseHelper.updatePumpBot(PumpBotEntity(it.limit,it.openPosition,it.pair,it.amount,it.active,it.interval))
+            println("Updated")
         }
     }
 
@@ -245,12 +247,12 @@ object BotManagerStorage {
                 pumpBotManager!!.openPosition = it.openPosition
                 pumpBotManager!!.limit = it.limit
                 pumpBotManager!!.active = it.active
-                pumpBotManager!!.percent = it.percent
+                pumpBotManager!!.amount = it.amount
             }
         }
         else{
             bot?.let {
-                pumpBotManager = PumpBotManager(pair = it.pairName, percent = it.percent,limit = it.limit, openPosition = it.openPosition, active = it.active, interval = it.interval)
+                pumpBotManager = PumpBotManager(pair = it.pairName, amount = it.amount,limit = it.limit, openPosition = it.openPosition, active = it.active, interval = it.interval)
             }
         }
 

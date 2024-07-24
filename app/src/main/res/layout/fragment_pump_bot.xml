@@ -29,15 +29,16 @@
             android:layout_height="50dp"
             android:textColorHint="@color/white"
             android:hint="limit"
-            app:layout_constraintTop_toBottomOf="@+id/percentEditText"
+            app:layout_constraintTop_toBottomOf="@+id/amountEditText"
             tools:layout_editor_absoluteX="0dp" />
 
         <EditText
-            android:id="@+id/percentEditText"
+            android:id="@+id/amountEditText"
             android:layout_width="match_parent"
             android:textColorHint="@color/white"
             android:layout_height="50dp"
-            android:hint="percent"
+            android:hint="amount"
+            android:textColor="@color/white"
             app:layout_constraintTop_toBottomOf="@+id/intervalEditText"
             tools:layout_editor_absoluteX="0dp" />
 
@@ -46,6 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:hint="Interval"
+            android:textColor="@color/white"
             android:textColorHint="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -88,10 +90,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="100dp"
+            android:layout_marginBottom="136dp"
             android:gravity="center"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent">
 
             <androidx.appcompat.widget.AppCompatButton

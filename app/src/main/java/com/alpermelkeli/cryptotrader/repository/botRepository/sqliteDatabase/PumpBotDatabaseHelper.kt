@@ -7,13 +7,13 @@ import android.database.sqlite.SQLiteOpenHelper
 class PumpBotDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
         private const val DATABASE_NAME = "pump_bot.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2 // Versiyonu 2 olarak güncelledik
         private const val TABLE_NAME = "pumpBot"
         private const val COLUMN_ID = "id"
         private const val COLUMN_LIMIT = "botLimit"
         private const val COLUMN_OPEN_POSITION = "openPosition"
         private const val COLUMN_PAIR_NAME = "pairName"
-        private const val COLUMN_PERCENT = "percent"
+        private const val COLUMN_AMOUNT = "amount"
         private const val COLUMN_ACTIVE = "active"
         private const val COLUMN_INTERVAL = "interval"
     }
@@ -25,7 +25,7 @@ class PumpBotDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
                 $COLUMN_LIMIT REAL,
                 $COLUMN_OPEN_POSITION INTEGER,
                 $COLUMN_PAIR_NAME TEXT,
-                $COLUMN_PERCENT INTEGER,
+                $COLUMN_AMOUNT REAL,
                 $COLUMN_ACTIVE INTEGER,
                 $COLUMN_INTERVAL TEXT
             )
@@ -41,8 +41,8 @@ class PumpBotDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
     private fun addPumpBot(bot: PumpBotEntity) {
         val db = writableDatabase
         val insertQuery = """
-            INSERT INTO $TABLE_NAME ($COLUMN_LIMIT, $COLUMN_OPEN_POSITION, $COLUMN_PAIR_NAME, $COLUMN_PERCENT, $COLUMN_ACTIVE,$COLUMN_INTERVAL)
-            VALUES (${bot.limit}, ${if (bot.openPosition) 1 else 0}, '${bot.pairName}', ${bot.percent}, ${if(bot.active) 1 else 0}, '${bot.interval}')
+            INSERT INTO $TABLE_NAME ($COLUMN_LIMIT, $COLUMN_OPEN_POSITION, $COLUMN_PAIR_NAME, $COLUMN_AMOUNT, $COLUMN_ACTIVE,$COLUMN_INTERVAL)
+            VALUES (${bot.limit}, ${if (bot.openPosition) 1 else 0}, '${bot.pairName}', ${bot.amount}, ${if(bot.active) 1 else 0}, '${bot.interval}')
         """
         db.execSQL(insertQuery)
         db.close()
@@ -57,10 +57,10 @@ class PumpBotDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
             val limit = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_LIMIT))
             val openPosition = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_OPEN_POSITION)) == 1
             val pairName = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PAIR_NAME))
-            val percent = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PERCENT))
+            val amount = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_AMOUNT))
             val active = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ACTIVE)) == 1
             val interval = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_INTERVAL))
-            bot = PumpBotEntity(limit, openPosition, pairName, percent,active,interval)
+            bot = PumpBotEntity(limit, openPosition, pairName, amount,active,interval)
         }
         cursor.close()
         db.close()

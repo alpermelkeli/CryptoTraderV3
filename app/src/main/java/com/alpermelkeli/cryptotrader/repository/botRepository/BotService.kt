@@ -11,9 +11,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
-import android.os.Handler
 import android.os.IBinder
-import android.os.Looper
 import android.os.SystemClock
 import android.util.Log
 import android.widget.Toast
@@ -40,7 +38,7 @@ class BotService : Service() {
         BotManagerStorage.initialize(applicationContext)
         manuelBotManagers = BotManagerStorage.getManuelBotManagers()
         followBotManagers = BotManagerStorage.getFollowBotManagers()
-        pumpBotManager = BotManagerStorage.getPumpBotManager() ?: PumpBotManager("PairNaaame",false,100.0,25,false,"5m")
+        pumpBotManager = BotManagerStorage.getPumpBotManager() ?: PumpBotManager("PairNaaame",false,100.0,0.0,false,"5m")
         createNotificationChannel()
         instance = this
         restartAllBots()
@@ -182,17 +180,17 @@ class BotService : Service() {
         BotManagerStorage.updateFollowBotManager(id, botManager)
         followBotManagers[id] = botManager
     }
-    private fun updatePumpBot(limit:Double, percent:Int,interval:String){
+    private fun updatePumpBot(limit:Double, amount: Double,interval:String){
         val botManager = pumpBotManager
         if(botManager.active){
             botManager.stop()
-            botManager.update(limit,percent,interval)
+            botManager.update(limit,amount,interval)
             botManager.start()
             Toast.makeText(application, "Bot updated.", Toast.LENGTH_LONG).show()
         }
         else{
             botManager.limit = limit
-            botManager.percent = percent
+            botManager.amount = amount
             botManager.interval = interval
             botManager.start()
             botManager.active = true
@@ -300,8 +298,8 @@ class BotService : Service() {
         fun updateFollowBot(botId: String,amount: Double,threshold: Double,distanceInterval: Double,followInterval: Double){
             instance.updateFollowBot(botId,amount,threshold,distanceInterval, followInterval)
         }
-        fun updatePumpBot(limit:Double, percent:Int,interval: String){
-            instance.updatePumpBot(limit, percent,interval)
+        fun updatePumpBot(limit:Double, amount: Double,interval: String){
+            instance.updatePumpBot(limit, amount,interval)
         }
         fun stopManuelBot(botId: String){
             instance.stopManuelBot(botId)
