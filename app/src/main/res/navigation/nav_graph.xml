@@ -23,6 +23,11 @@
         android:label="FollowBot"
         tools:layout="@layout/fragment_follow_bot"/>
 
+    <fragment android:id="@+id/pumpBotFragment"
+        android:name="com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.botfragments.pumpbotfragment.PumpBotFragment"
+        android:label="Pump Bot"
+        tools:layout="@layout/fragment_pump_bot"/>
+
     <fragment android:id="@+id/profileFragment"
         android:name="com.alpermelkeli.cryptotrader.ui.HomeScreen.fragments.profilefragment.ProfileFragment"
         android:label="Profile"
