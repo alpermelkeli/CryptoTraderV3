@@ -15,8 +15,6 @@ import java.net.URISyntaxException;
 public class BinancePumpDetection {
     WebSocketClient webSocketClient;
 
-    double limit = 0.1f;
-
     private KlineListener klineListener;
 
     public void setKlineListener(KlineListener listener) {
@@ -92,4 +90,8 @@ public class BinancePumpDetection {
             e.printStackTrace();
         }
     }
+    public void  stopWebSocketConnection() {
+        webSocketClient.close(1000, null);
+    }
+
 }

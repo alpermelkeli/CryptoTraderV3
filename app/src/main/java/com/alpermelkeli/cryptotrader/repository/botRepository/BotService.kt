@@ -21,6 +21,7 @@ import androidx.core.app.NotificationCompat
 import com.alpermelkeli.cryptotrader.R
 import com.alpermelkeli.cryptotrader.model.bot.FollowBotManager
 import com.alpermelkeli.cryptotrader.model.bot.ManuelBotManager
+import com.alpermelkeli.cryptotrader.model.bot.PumpBotManager
 import com.alpermelkeli.cryptotrader.repository.botRepository.ram.BotManagerStorage
 import com.alpermelkeli.cryptotrader.ui.HomeScreen.HomeScreen
 import kotlinx.coroutines.*
@@ -32,12 +33,14 @@ import kotlinx.coroutines.*
 class BotService : Service() {
     private lateinit var manuelBotManagers : MutableMap<String, ManuelBotManager>
     private lateinit var followBotManagers : MutableMap<String, FollowBotManager>
+    private lateinit var pumpBotManager: PumpBotManager
     private val RESTART_INTERVAL_MS = 10 * 60 * 1000L // 16-17 dakika
     override fun onCreate() {
         super.onCreate()
         BotManagerStorage.initialize(applicationContext)
         manuelBotManagers = BotManagerStorage.getManuelBotManagers()
         followBotManagers = BotManagerStorage.getFollowBotManagers()
+        pumpBotManager = BotManagerStorage.getPumpBotManager() ?: PumpBotManager("PairNaaame",false,100.0,25,false,"5m")
         createNotificationChannel()
         instance = this
         restartAllBots()
@@ -135,6 +138,10 @@ class BotService : Service() {
             followBotManagers[id] = botManager
         }
     }
+
+    private fun startPumpBot(){
+        pumpBotManager.start()
+    }
     private fun updateManuelBot(id: String, amount: Double, threshold: Double) {
         val botManager = manuelBotManagers[id]!!
         if(botManager.status=="Active"){
@@ -175,6 +182,25 @@ class BotService : Service() {
         BotManagerStorage.updateFollowBotManager(id, botManager)
         followBotManagers[id] = botManager
     }
+    private fun updatePumpBot(limit:Double, percent:Int,interval:String){
+        val botManager = pumpBotManager
+        if(botManager.active){
+            botManager.stop()
+            botManager.update(limit,percent,interval)
+            botManager.start()
+            Toast.makeText(application, "Bot updated.", Toast.LENGTH_LONG).show()
+        }
+        else{
+            botManager.limit = limit
+            botManager.percent = percent
+            botManager.interval = interval
+            botManager.start()
+            botManager.active = true
+            Toast.makeText(application, "Bot initialized and resumed.", Toast.LENGTH_LONG).show()
+        }
+        BotManagerStorage.updatePumpBotManager(botManager)
+        pumpBotManager = botManager
+    }
     private fun stopManuelBot(id: String) {
         val botManager = manuelBotManagers[id]!!
         botManager.stop()
@@ -192,6 +218,17 @@ class BotService : Service() {
         Toast.makeText(applicationContext, "Bot stopped", Toast.LENGTH_LONG).show()
         Log.d("BotService", "Bot $id stopped")
         followBotManagers[id] = botManager
+    }
+    private fun stopPumpBot(){
+        val botManager = pumpBotManager
+        if(botManager.active){
+            botManager.stop()
+            botManager.active = false
+            botManager.openPosition = false
+            botManager.pair = "PairName"
+        }
+        BotManagerStorage.updatePumpBotManager(botManager)
+        pumpBotManager = botManager
     }
     private fun stopAllManuelBots() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -254,6 +291,7 @@ class BotService : Service() {
                 Log.d("BotService", Bot.status)
                 if(Bot.status=="Active") instance.startFollowBot(id)
             }
+            if(instance.pumpBotManager.active) instance.startPumpBot()
             Log.d("BotService", "All bots restarted")
         }
         fun updateManuelBot(botId: String, amount: Double, threshold: Double){
@@ -262,11 +300,17 @@ class BotService : Service() {
         fun updateFollowBot(botId: String,amount: Double,threshold: Double,distanceInterval: Double,followInterval: Double){
             instance.updateFollowBot(botId,amount,threshold,distanceInterval, followInterval)
         }
+        fun updatePumpBot(limit:Double, percent:Int,interval: String){
+            instance.updatePumpBot(limit, percent,interval)
+        }
         fun stopManuelBot(botId: String){
             instance.stopManuelBot(botId)
         }
         fun stopFollowBot(botId: String){
             instance.stopFollowBot(botId)
+        }
+        fun stopPumpBot(){
+            instance.stopPumpBot()
         }
 
     }

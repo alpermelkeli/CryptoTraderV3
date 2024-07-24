@@ -3,10 +3,13 @@ package com.alpermelkeli.cryptotrader.repository.botRepository.ram
 import android.content.Context
 import com.alpermelkeli.cryptotrader.model.bot.FollowBotManager
 import com.alpermelkeli.cryptotrader.model.bot.ManuelBotManager
+import com.alpermelkeli.cryptotrader.model.bot.PumpBotManager
 import com.alpermelkeli.cryptotrader.repository.botRepository.sqliteDatabase.FollowBotDatabaseHelper
 import com.alpermelkeli.cryptotrader.repository.botRepository.sqliteDatabase.FollowBotEntity
 import com.alpermelkeli.cryptotrader.repository.botRepository.sqliteDatabase.ManuelBotDatabaseHelper
 import com.alpermelkeli.cryptotrader.repository.botRepository.sqliteDatabase.ManuelBotEntity
+import com.alpermelkeli.cryptotrader.repository.botRepository.sqliteDatabase.PumpBotDatabaseHelper
+import com.alpermelkeli.cryptotrader.repository.botRepository.sqliteDatabase.PumpBotEntity
 
 object BotManagerStorage {
 
@@ -14,15 +17,20 @@ object BotManagerStorage {
 
     private val followBotManagers: MutableMap<String, FollowBotManager> = mutableMapOf()
 
+    private var pumpBotManager : PumpBotManager? = null
     private lateinit var manuelBotDbHelper: ManuelBotDatabaseHelper
 
     private lateinit var followBotDbHelper: FollowBotDatabaseHelper
 
+    private lateinit var pumpBotDatabaseHelper: PumpBotDatabaseHelper
+
     fun initialize(context: Context) {
         manuelBotDbHelper = ManuelBotDatabaseHelper(context)
         followBotDbHelper = FollowBotDatabaseHelper(context)
+        pumpBotDatabaseHelper = PumpBotDatabaseHelper(context)
         loadManuelBotsFromDatabase()
         loadFollowBotsFromDatabase()
+        loadPumpBotFromDatabase()
     }
 
     fun addManuelBotManager(manuelBotManager: ManuelBotManager) {
@@ -82,6 +90,10 @@ object BotManagerStorage {
         return followBotManagers
     }
 
+    fun getPumpBotManager():PumpBotManager?{
+        return pumpBotManager
+    }
+
     fun updateManuelBotManager(id: String, manuelBotManager: ManuelBotManager) {
         manuelBotDbHelper.removeBotById(id)
         manuelBotManagers[id] = manuelBotManager
@@ -122,6 +134,11 @@ object BotManagerStorage {
                 followBotManager.followInterval
             )
         )
+    }
+    fun updatePumpBotManager(bot:PumpBotManager){
+        bot.let {
+            pumpBotDatabaseHelper.updatePumpBot(PumpBotEntity(it.limit,it.openPosition,it.pair,it.percent,it.active,it.interval))
+        }
     }
 
     fun removeManuelBotManager(id: String) {
@@ -218,6 +235,25 @@ object BotManagerStorage {
                 followBotManagers[bot.id] = followBotManager
             }
         }
+    }
+    private fun loadPumpBotFromDatabase(){
+        val bot = pumpBotDatabaseHelper.getPumpBot()
+        if(pumpBotManager!=null){
+            bot?.let {
+                pumpBotManager!!.pair = it.pairName
+                pumpBotManager!!.interval = it.interval
+                pumpBotManager!!.openPosition = it.openPosition
+                pumpBotManager!!.limit = it.limit
+                pumpBotManager!!.active = it.active
+                pumpBotManager!!.percent = it.percent
+            }
+        }
+        else{
+            bot?.let {
+                pumpBotManager = PumpBotManager(pair = it.pairName, percent = it.percent,limit = it.limit, openPosition = it.openPosition, active = it.active, interval = it.interval)
+            }
+        }
+
     }
 }
 
