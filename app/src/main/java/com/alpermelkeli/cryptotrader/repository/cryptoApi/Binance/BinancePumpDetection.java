@@ -92,6 +92,7 @@ public class BinancePumpDetection {
     }
     public void  stopWebSocketConnection() {
         webSocketClient.close(1000, null);
+        webSocketClient = null;
     }
 
 }

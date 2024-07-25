@@ -228,6 +228,44 @@ public class BinanceAccountOperations implements AccountOperations{
             return 0.0;
         }
     }
+    private double adjustQuantityToLotSize(String symbol, double quantity) {
+        try {
+            String exchangeInfoUrl = BASE_URL + "/v3/exchangeInfo?symbol=" + symbol;
+
+            Request request = new Request.Builder()
+                    .url(exchangeInfoUrl)
+                    .addHeader("X-MBX-APIKEY", API_KEY)
+                    .build();
+
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new IOException("Unexpected code " + response);
+                }
+
+                String responseBody = response.body().string();
+                JSONObject exchangeInfoJson = new JSONObject(responseBody);
+                JSONObject symbolInfo = exchangeInfoJson.getJSONArray("symbols").getJSONObject(0);
+                JSONArray filters = symbolInfo.getJSONArray("filters");
+
+                for (int i = 0; i < filters.length(); i++) {
+                    JSONObject filter = filters.getJSONObject(i);
+                    if (filter.getString("filterType").equals("LOT_SIZE")) {
+                        double stepSize = filter.getDouble("stepSize");
+                        double minQty = filter.getDouble("minQty");
+
+                        // Adjust the quantity to be a multiple of stepSize and not less than minQty
+                        double adjustedQuantity = Math.max(Math.floor(quantity / stepSize) * stepSize, minQty);
+                        return adjustedQuantity;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+        return 0.0;
+    }
     @Override
     public CompletableFuture<Double> getSelectedCoinQuantity(String asset) {
         return CompletableFuture.supplyAsync(() -> {
@@ -389,14 +427,24 @@ public class BinanceAccountOperations implements AccountOperations{
         CompletableFuture<TradeResult> future = new CompletableFuture<>();
         try {
             String endpoint = "/v3/order";
+
             String url = BASE_URL + endpoint;
+
             double quantity = convertToQuantity(symbol,usdtQuantity);
-            BigDecimal roundedQuantity = new BigDecimal(quantity).setScale(2, RoundingMode.DOWN);
+
+            quantity = adjustQuantityToLotSize(symbol,quantity);
+
+
             long timestamp = System.currentTimeMillis();
-            String queryString = "symbol=" + encode(symbol) + "&side=BUY&type=MARKET&quantity=" + roundedQuantity.toString() + "&timestamp=" + timestamp;
+
+            String queryString = "symbol=" + encode(symbol) + "&side=BUY&type=MARKET&quantity=" + quantity + "&timestamp=" + timestamp;
+
             String signature = generateSignature(queryString);
+
             queryString += "&signature=" + encode(signature);
+
             System.out.println(queryString);
+
             HttpUrl httpUrl = HttpUrl.parse(url).newBuilder().encodedQuery(queryString).build();
 
             Request request = new Request.Builder()
@@ -518,9 +566,9 @@ public class BinanceAccountOperations implements AccountOperations{
             String endpoint = "/v3/order";
             String url = BASE_URL + endpoint;
             double quantity = convertToQuantity(symbol,usdtQuantity);
-            BigDecimal roundedQuantity = new BigDecimal(quantity).setScale(2, RoundingMode.DOWN);
+            quantity = adjustQuantityToLotSize(symbol,quantity);
             long timestamp = System.currentTimeMillis();
-            String queryString = "symbol=" + encode(symbol) + "&side=SELL&type=MARKET&quantity=" + roundedQuantity + "&timestamp=" + timestamp;
+            String queryString = "symbol=" + encode(symbol) + "&side=SELL&type=MARKET&quantity=" + quantity + "&timestamp=" + timestamp;
             String signature = generateSignature(queryString);
             queryString += "&signature=" + encode(signature);
 

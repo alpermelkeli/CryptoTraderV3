@@ -32,9 +32,9 @@ class PumpBotFragment : Fragment() {
     private fun retrieveBotInformation(){
         val pumpBotManager = BotManagerStorage.getPumpBotManager()
         pumpBotManager?.let {
-            binding.pairText.text = it?.pair
-            binding.openPositionText.text = if(it?.openPosition!!) "Posizyon Açık" else "Pozisyon Kapalı"
-            binding.activeText.text = if(it?.active!!)"Bot Aktif" else "Bot Pasif"
+            binding.pairText.text = it.pair
+            binding.openPositionText.text = if(it.openPosition!!) "Posizyon Açık" else "Pozisyon Kapalı"
+            binding.activeText.text = if(it.active!!)"Bot Aktif" else "Bot Pasif"
             binding.amountEditText.setText(it.amount.toString())
             binding.intervalEditText.setText(it.interval)
             binding.limitEditText.setText(it.limit.toString())
