@@ -14,6 +14,8 @@ public interface AccountOperations {
     CompletableFuture<List<Coin>> getAccountWallet();
     CompletableFuture<Double> getSelectedCoinQuantity(String asset);
     CompletableFuture<List<Trade>> getTradeHistorySelectedCoin(String pairName);
+    CompletableFuture<TradeResult> sellCoinWithUSDT(String symbol, double usdtQuantity);
+    CompletableFuture<TradeResult> buyCoinWithUSDT(String symbol, double usdtQuantity);
     CompletableFuture<Boolean> openLongToCoin(String symbol, double quantity, int leverage);
     CompletableFuture<Boolean> openShortToCoin(String symbol, double quantity, int leverage);
 }

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:orientation="vertical"
+    android:gravity="center_vertical"
+    android:background="@drawable/dialog_background"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/pairText"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:textColor="@color/white"
+            android:textAlignment="center"
+            />
+
+        <TextView
+            android:id="@+id/openPrice"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:textColor="@color/white"
+            android:textAlignment="center"
+            />
+        <TextView
+            android:id="@+id/closePrice"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:textColor="@color/white"
+            android:textAlignment="center"
+            />
+        <TextView
+            android:id="@+id/profitText"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:textColor="@color/white"
+            android:textAlignment="center"
+            />
+
+    </LinearLayout>
+
+
+</LinearLayout>

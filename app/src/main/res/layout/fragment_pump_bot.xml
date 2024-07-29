@@ -28,6 +28,8 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:textColorHint="@color/white"
+            android:textColor="@color/white"
+            android:textAlignment="center"
             android:hint="limit"
             app:layout_constraintTop_toBottomOf="@+id/amountEditText"
             tools:layout_editor_absoluteX="0dp" />
@@ -38,6 +40,7 @@
             android:textColorHint="@color/white"
             android:layout_height="50dp"
             android:hint="amount"
+            android:textAlignment="center"
             android:textColor="@color/white"
             app:layout_constraintTop_toBottomOf="@+id/intervalEditText"
             tools:layout_editor_absoluteX="0dp" />
@@ -47,6 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:hint="Interval"
+            android:textAlignment="center"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
@@ -88,15 +92,15 @@
             app:layout_constraintTop_toBottomOf="@+id/activeText" />
 
         <LinearLayout
+            android:id="@+id/linearLayout3"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_marginBottom="136dp"
             android:gravity="center"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/limitEditText">
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/updateButton"
@@ -123,6 +127,66 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="History"
+            android:gravity="center"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout4"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_height="20dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView9">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="20dp"
+                android:text="Pair"
+                android:textAlignment="center"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="20dp"
+                android:text="Open Price"
+                android:textAlignment="center"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="20dp"
+                android:text="Close Price"
+                android:textAlignment="center"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="20dp"
+                android:text="Profit"
+                android:textAlignment="center"
+                android:textColor="@color/white" />
+
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/pumpBotPositionsRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout4" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

@@ -14,7 +14,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import okhttp3.Response
 import okhttp3.WebSocket
 
@@ -26,7 +25,8 @@ class PumpBotManager(
     var active:Boolean,
     var interval:String
 ) : KlineListener {
-    private @Volatile var processingOrder = false
+    @Volatile
+    private var processingOrder = false
     private val binancePumpDetection = BinancePumpDetection()
     private var openPrice:Double = 0.0
     private val binanceAccountOperations = BinanceAccountOperations(ApiStorage.getSelectedApi()?.apiKey,ApiStorage.getSelectedApi()?.secretKey)
@@ -49,10 +49,10 @@ class PumpBotManager(
     fun stop(){
         binancePumpDetection.stopWebSocketConnection()
         active = false
-        untrackOpenedPosition()
+        untrackedOpenedPosition()
     }
 
-    private fun trackOpenedPosition(symbol: String){
+    fun trackOpenedPosition(symbol: String){
         binancePumpDetection.stopWebSocketConnection()
         val listener: BinanceWebSocketListener = object : BinanceWebSocketListener() {
             override fun onPriceUpdate(price: String) {
@@ -64,7 +64,7 @@ class PumpBotManager(
                 super.onFailure(webSocket, t, response)
                 BotService.sendNotification("Pump botun açık pozisyon bağlantısı koptu!","Yeniden bağlantı deneniyor...")
                 CoroutineScope(Dispatchers.Main).launch {
-                    untrackOpenedPosition()
+                    untrackedOpenedPosition()
                     delay(10000)
                     trackOpenedPosition(pair)
                 }
@@ -74,7 +74,7 @@ class PumpBotManager(
         webSocketManager!!.connect(symbol)
     }
 
-    private fun untrackOpenedPosition(){
+    private fun untrackedOpenedPosition(){
         webSocketManager?.disconnect()
         webSocketManager = null
         openPosition = false
@@ -116,17 +116,18 @@ class PumpBotManager(
 
         Log.d("Websocket", "$currentPrice currentPrice currentPercent $percent")
 
-        if(percent<-1 && !processingOrder){
-            BotService.sendNotification("Pump Bot", "Yüzdelik -0.05 in altına düştü satıldı.")
+        if(percent<-2 && !processingOrder){
             processingOrder = true
-            binanceAccountOperations.sellCoinWithUSDT(pair,amount)
+            binanceAccountOperations.sellCoinWithUSDT(pair,amount*0.97)
                 .thenAccept{tradeResult:TradeResult ->
                     if(tradeResult.isSuccess){
                         openPosition = false
-                        pair = "PairName"
-                        untrackOpenedPosition()
+                        pair = "Empty"
                         BotManagerStorage.updatePumpBotManager(this)
+                        BotService.sendNotification("Pump Bot", "Yüzdelik -2 in altına düştü satıldı.")
                         BotService.sendNotification("Sell pump", "Buy order for $pair executed successfully. Total commission: ${tradeResult.commission} $pair")
+                        untrackedOpenedPosition()
+                        start()
                     }
                     else{
                         BotService.sendNotification("Sell Order Failed Pump", "Buy order for $pair failed. Please check the logs for more details.")
@@ -137,21 +138,22 @@ class PumpBotManager(
                     BotService.sendNotification("Sell Order Error Pump", "An error occurred during buy operation for $pair: ${ex.message}")
                     null
                 }
-                .whenComplete { _, _ -> processingOrder = false }
+                .whenComplete { _, _ -> processingOrder = false
+                }
 
-            start()
         }
         else if (percent>5.0 && !processingOrder){
-            BotService.sendNotification("Pump Bot","Yüzdelik 5 un üstüne çıktı satılma.")
+            BotService.sendNotification("Pump Bot","Yüzdelik 5 un üstüne çıktı satıldı.")
             processingOrder = true
-            binanceAccountOperations.sellCoin(pair,amount)
+            binanceAccountOperations.sellCoin(pair,amount*1.03)
                 .thenAccept{tradeResult:TradeResult ->
                     if(tradeResult.isSuccess){
                         openPosition = false
                         pair = "PairName"
-                        untrackOpenedPosition()
+                        untrackedOpenedPosition()
                         BotManagerStorage.updatePumpBotManager(this)
                         BotService.sendNotification("Sell pump", "Buy order for $pair executed successfully. Total commission: ${tradeResult.commission} $pair")
+                        start()
                     }
                     else{
                         BotService.sendNotification("Sell Order Failed Pump", "Buy order for $pair failed. Please check the logs for more details.")
@@ -164,7 +166,6 @@ class PumpBotManager(
                 }
                 .whenComplete { _, _ -> processingOrder = false }
 
-            start()
         }
     }
 

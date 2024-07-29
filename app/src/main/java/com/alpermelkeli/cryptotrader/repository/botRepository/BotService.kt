@@ -38,7 +38,7 @@ class BotService : Service() {
         BotManagerStorage.initialize(applicationContext)
         manuelBotManagers = BotManagerStorage.getManuelBotManagers()
         followBotManagers = BotManagerStorage.getFollowBotManagers()
-        pumpBotManager = BotManagerStorage.getPumpBotManager() ?: PumpBotManager("PairNaaame",false,100.0,0.0,false,"5m")
+        pumpBotManager = BotManagerStorage.getPumpBotManager() ?: PumpBotManager("Empty",false,0.0,0.0,false,"5m")
         createNotificationChannel()
         instance = this
         restartAllBots()
@@ -138,7 +138,12 @@ class BotService : Service() {
     }
 
     private fun startPumpBot(){
-        pumpBotManager.start()
+        if(pumpBotManager.openPosition){
+            pumpBotManager.trackOpenedPosition(pumpBotManager.pair)
+        }
+        else{
+            pumpBotManager.start()
+        }
     }
     private fun updateManuelBot(id: String, amount: Double, threshold: Double) {
         val botManager = manuelBotManagers[id]!!
@@ -223,7 +228,7 @@ class BotService : Service() {
             botManager.stop()
             botManager.active = false
             botManager.openPosition = false
-            botManager.pair = "PairName"
+            botManager.pair = "Empty"
         }
         BotManagerStorage.updatePumpBotManager(botManager)
         pumpBotManager = botManager
@@ -278,6 +283,7 @@ class BotService : Service() {
             instance.cancelServiceRestart()
             instance.stopAllManuelBots()
             instance.stopAllFollowBots()
+            instance.stopPumpBot()
             instance.stopSelf()
         }
         fun restartAllBots() {

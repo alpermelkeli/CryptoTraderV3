@@ -423,6 +423,7 @@ public class BinanceAccountOperations implements AccountOperations{
 
         return future;
     }
+    @Override
     public CompletableFuture<TradeResult> buyCoinWithUSDT(String symbol, double usdtQuantity) {
         CompletableFuture<TradeResult> future = new CompletableFuture<>();
         try {
@@ -559,6 +560,7 @@ public class BinanceAccountOperations implements AccountOperations{
 
         return future;
     }
+    @Override
     public CompletableFuture<TradeResult> sellCoinWithUSDT(String symbol, double usdtQuantity) {
         CompletableFuture<TradeResult> future = new CompletableFuture<>();
 
