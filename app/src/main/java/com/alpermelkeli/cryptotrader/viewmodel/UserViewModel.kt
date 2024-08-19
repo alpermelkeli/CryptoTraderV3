@@ -20,6 +20,12 @@ class UserViewModel(context: Context) : ViewModel() {
     private val _userDocument = MutableLiveData<Map<String, Any>?>()
     val userDocument: LiveData<Map<String, Any>?> get() = _userDocument
 
+    fun getTempBalance():Float{
+        return userRepository.getTempBalance()
+    }
+    fun storeTempBalance(balance:Double){
+        userRepository.storeTempBalance(balance)
+    }
 
     fun registerUser(email: String, password: String, accountType: String, name:String, surname:String, phoneNumber:String) {
         userRepository.registerUser(email, password, accountType, name, surname, phoneNumber) { success, message ->

@@ -47,13 +47,14 @@ class PumpBotManager(
         this.interval = interval
     }
     fun stop(){
-        binancePumpDetection.stopWebSocketConnection()
+        if(!openPosition)binancePumpDetection.stopWebSocketConnection()
         active = false
         untrackedOpenedPosition()
     }
 
     fun trackOpenedPosition(symbol: String){
-        binancePumpDetection.stopWebSocketConnection()
+        if(binancePumpDetection!=null) binancePumpDetection.stopWebSocketConnection()
+
         val listener: BinanceWebSocketListener = object : BinanceWebSocketListener() {
             override fun onPriceUpdate(price: String) {
                 val currentPrice = price.toDouble()
@@ -116,7 +117,7 @@ class PumpBotManager(
 
         Log.d("Websocket", "$currentPrice currentPrice currentPercent $percent")
 
-        if(percent<-2 && !processingOrder){
+        if(percent<-1 && !processingOrder){
             processingOrder = true
             binanceAccountOperations.sellCoinWithUSDT(pair,amount*0.97)
                 .thenAccept{tradeResult:TradeResult ->
@@ -142,10 +143,10 @@ class PumpBotManager(
                 }
 
         }
-        else if (percent>5.0 && !processingOrder){
+        else if (percent>5 && !processingOrder){
             BotService.sendNotification("Pump Bot","Yüzdelik 5 un üstüne çıktı satıldı.")
             processingOrder = true
-            binanceAccountOperations.sellCoin(pair,amount*1.03)
+            binanceAccountOperations.sellCoin(pair,amount*1.04)
                 .thenAccept{tradeResult:TradeResult ->
                     if(tradeResult.isSuccess){
                         openPosition = false

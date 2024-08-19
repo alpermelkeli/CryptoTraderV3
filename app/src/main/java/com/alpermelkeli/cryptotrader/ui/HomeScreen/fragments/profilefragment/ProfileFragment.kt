@@ -31,6 +31,7 @@ class ProfileFragment : Fragment() {
     private lateinit var binding : FragmentProfileBinding
     private lateinit var accountViewModel: AccountViewModel
     private lateinit var adapter: WalletAdapter
+    private var balance: Float = 0.0f
     private val userViewModel: UserViewModel by viewModels {
         UserViewModelFactory(requireContext())
     }
@@ -40,6 +41,10 @@ class ProfileFragment : Fragment() {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
 
         setProgressBarAnimation()
+
+        balance = userViewModel.getTempBalance()
+
+        binding.profileBalanceText.text = String.format("%.2f USDT",balance)
 
         initializeAccountOperations()
 
@@ -84,12 +89,12 @@ class ProfileFragment : Fragment() {
     }
     private fun updateAccountBalance() {
         accountViewModel.balance.observe(viewLifecycleOwner) {
+            userViewModel.storeTempBalance(it)
             updateAccountBalanceAnimated(it)
         }
     }
     private fun updateAccountBalanceAnimated(newBalance: Double) {
-        val currentBalance = 0.0
-        val animator = ValueAnimator.ofFloat(currentBalance.toFloat(), newBalance.toFloat())
+        val animator = ValueAnimator.ofFloat(balance, newBalance.toFloat())
         animator.duration = 500
         animator.interpolator = AccelerateDecelerateInterpolator()
         animator.addUpdateListener { animation ->

@@ -31,13 +31,19 @@ class HomeFragment : Fragment() {
     private val userViewModel: UserViewModel by viewModels {
         UserViewModelFactory(requireContext())
     }
-
+    private var balance : Float = 0.0f
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentHomeBinding.inflate(inflater,container,false)
+
+        balance = userViewModel.getTempBalance()
+
+        binding.accountBalanceUsdtText.text = String.format("%.2f USDT", balance)
+
         initializeAccountOperations()
+
         setUpUserUI()
 
 
@@ -45,12 +51,12 @@ class HomeFragment : Fragment() {
     }
     private fun updateAccountBalance() {
         accountViewModel.balance.observe(viewLifecycleOwner){
+            userViewModel.storeTempBalance(it)
             updateAccountBalanceAnimated(it)
         }
     }
     private fun updateAccountBalanceAnimated(newBalance: Double) {
-        val currentBalance = 0.0
-        val animator = ValueAnimator.ofFloat(currentBalance.toFloat(), newBalance.toFloat())
+        val animator = ValueAnimator.ofFloat(balance, newBalance.toFloat())
         animator.duration = 500
         animator.interpolator = AccelerateDecelerateInterpolator()
         animator.addUpdateListener { animation ->

@@ -11,6 +11,17 @@ class UserRepository(private val context: Context) {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val sharedPref = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
+
+    fun storeTempBalance(balance:Double){
+        val editor = sharedPref.edit()
+        editor.putFloat("tempBalance", balance.toFloat())
+        editor.apply()
+    }
+    fun getTempBalance():Float{
+        val balance = sharedPref.getFloat("tempBalance",0f)
+        return balance
+    }
 
     fun registerUser(email: String, password: String, accountType: String, name:String, surname:String, phoneNumber:String, callback: (Boolean, String?) -> Unit) {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
