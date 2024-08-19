@@ -28,7 +28,6 @@ class ApiSettingsFragment : Fragment() {
     ): View? {
         binding = FragmentApiSettingsBinding.inflate(inflater, container, false)
 
-        ApiStorage.initialize(requireContext())
 
         setUpRecyclerView()
 

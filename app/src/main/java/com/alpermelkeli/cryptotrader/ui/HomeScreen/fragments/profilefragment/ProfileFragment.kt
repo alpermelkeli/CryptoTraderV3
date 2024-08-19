@@ -77,7 +77,6 @@ class ProfileFragment : Fragment() {
     }
     private fun initializeAccountOperations() {
         CoroutineScope(Dispatchers.IO).launch {
-            ApiStorage.initialize(requireContext())
             val selectedAPI = ApiStorage.getSelectedApi()
             withContext(Dispatchers.Main) {
                 val API_KEY = selectedAPI?.apiKey ?: ""
